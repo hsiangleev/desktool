@@ -1,0 +1,99 @@
+<template>
+    <div class='h-full flex'>
+        <el-card class='eps-card-flex w-1/2' shadow='never'>
+            <el-form ref='ruleFormRef' :model='ruleForm' :rules='rules' label-width='80px'>
+                <el-form-item label='请求地址' prop='url'>
+                    <el-input v-model='ruleForm.url' placeholder='请输入请求地址' />
+                </el-form-item>
+                <el-form-item label='请求类型' prop='method'>
+                    <el-radio-group v-model='ruleForm.method'>
+                        <el-radio value='GET'>get</el-radio>
+                        <el-radio value='POST'>post</el-radio>
+                        <el-radio value='DELETE'>delete</el-radio>
+                        <el-radio value='PUT'>put</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+                <el-form-item label='params' prop='params'>
+                    <el-input v-model='ruleForm.params' type='textarea' :rows='3' placeholder='请输入请求params' />
+                </el-form-item>
+                <el-form-item label='data' prop='data'>
+                    <el-input v-model='ruleForm.data' type='textarea' :rows='6' placeholder='请输入请求data' />
+                </el-form-item>
+                <el-form-item>
+                    <el-button type='primary' @click='submitForm(ruleFormRef)'>发送请求</el-button>
+                    <el-button @click='resetForm(ruleFormRef)'>重置</el-button>
+                </el-form-item>
+            </el-form>
+        </el-card>
+        <div class='h-full w-1/2'><el-input v-model='responseData' type='textarea' :rows='4' readonly class='h-full' /></div>
+    </div>
+</template>
+<script setup lang='ts'>
+import type { FormInstance, FormRules } from 'element-plus'
+const responseData = ref('')
+interface IForm {
+    url: string
+    method: string
+    data: string
+    params: string
+}
+const ruleFormRef = ref<FormInstance>()
+const ruleForm = reactive<IForm>({
+    url: '',
+    method: 'GET',
+    data: '',
+    params: ''
+})
+const checkJson = (value: any) => {
+    if (value === '') return
+    let isError = false
+    try {
+        JSON.parse(value)
+    } catch {
+        isError = true
+    }
+    return isError ? 'JSON格式不正确' : undefined
+}
+const rules = reactive<FormRules<IForm>>({
+    url: [{ required: true, message: '请求地址不能为空', trigger: 'blur' }],
+    params: [{ validator: (_: any, value: any, callback: any) => callback(checkJson(value)), trigger: 'blur' }],
+    data: [{ validator: (_: any, value: any, callback: any) => callback(checkJson(value)), trigger: 'blur' }]
+})
+
+const submitForm = async(formEl: FormInstance | undefined) => {
+    if(!await epsFormSubmit(formEl)) return
+    // const { close } = await epsLayerLoading()
+    // let data = {}
+    // let params = {}
+    // try {
+    //     data = JSON.parse(ruleForm.data || '{}')
+    // } catch {}
+    // try {
+    //     params = JSON.parse(ruleForm.params || '{}')
+    // } catch {}
+    responseData.value = ''
+    try {
+        // const res = await request({
+        //     url: ruleForm.url,
+        //     method: ruleForm.method,
+        //     params,
+        //     data
+        // })
+        // responseData.value = JSON.stringify(res.data, null, 4)
+
+    } catch (error: any) {
+        console.log(error)
+    }
+}
+
+const resetForm = (formEl: FormInstance | undefined) => {
+    if (!formEl) return
+    formEl.resetFields()
+}
+</script>
+
+<style scoped>
+    :deep(.el-textarea__inner) {
+        height: 100%;
+    }
+</style>

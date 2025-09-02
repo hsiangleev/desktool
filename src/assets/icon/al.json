@@ -1,0 +1,29 @@
+{
+	"prefix": "al",
+	"icons": {
+		"plus": "ep",
+		"edit": "ep",
+		"delete": "ep",
+		"view": "ep",
+		"save-outlined": "ant-design",
+		"export-outlined": "ant-design",
+		"import-outlined": "ant-design",
+		"printer": "ep",
+		"arrow-up-outlined": "ant-design",
+		"arrow-down-outlined": "ant-design",
+		"upload": "ep",
+		"download": "ep",
+		"search-outlined": "ant-design",
+		"refresh": "ep",
+		"close": "ep",
+		"select": "ep",
+		"arrows-move": "bi",
+		"node-collapse-outlined": "ant-design",
+		"node-expand-outlined": "ant-design",
+        "delete-row-outlined": "ant-design",
+        "insert-row-below-outlined": "ant-design",
+        "insert-row-above-outlined": "ant-design",
+        "sort": "ep",
+        "select-outlined": "ant-design"
+	}
+}

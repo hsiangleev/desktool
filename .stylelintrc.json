@@ -1,0 +1,40 @@
+{
+    "extends": [
+        "stylelint-config-standard", 
+        "stylelint-config-recommended-vue", 
+        "stylelint-config-html/vue"
+    ],
+    "plugins": [
+		"@stylistic/stylelint-plugin"
+	],
+    "ignoreFiles": ["node_modules/**", "dist/**", "public/**"],
+    "rules": {
+        "at-rule-no-unknown": [ true, {
+            "ignoreAtRules": [
+                "responsive",
+                "tailwind"
+            ]
+        }],
+        "selector-pseudo-element-no-unknown": [true, {
+            "ignorePseudoElements": ["v-deep"]
+        }],
+        "value-keyword-case": null,
+        "selector-class-pattern": "^.+$",
+
+        "@stylistic/indentation": 4,
+        "@stylistic/string-quotes": "single",
+        "@stylistic/unit-case": "lower",
+        "@stylistic/no-extra-semicolons": true,
+        "@stylistic/no-empty-first-line": true,
+        "@stylistic/no-eol-whitespace": true,
+        "@stylistic/max-empty-lines": [1, {"ignore": ["comments"]}],
+        "@stylistic/block-closing-brace-empty-line-before": "never",
+        "@stylistic/selector-pseudo-element-case": "lower",
+        "@stylistic/selector-max-empty-lines": 0,
+        "@stylistic/selector-combinator-space-before": "always",
+        "@stylistic/selector-combinator-space-after": "always",
+        "@stylistic/selector-attribute-operator-space-before": "never",
+        "@stylistic/selector-attribute-operator-space-after": "never",
+        "@stylistic/selector-attribute-brackets-space-inside": "never"
+    }
+}

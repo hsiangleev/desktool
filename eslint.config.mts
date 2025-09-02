@@ -1,0 +1,98 @@
+import globals from 'globals'
+import pluginJs from '@eslint/js'
+import tseslint from 'typescript-eslint'
+import pluginVue from 'eslint-plugin-vue'
+import unocss from '@unocss/eslint-config/flat'
+
+export default [
+    { files: ['**/*.{js,mjs,cjs,ts,tsx,vue}'] },
+    { languageOptions: { globals: globals.browser } },
+    pluginJs.configs.recommended,
+    ...tseslint.configs.recommended,
+    ...pluginVue.configs['flat/recommended'],
+    { 
+        files: ['**/*.vue'], 
+        languageOptions: { 
+            parserOptions: { 
+                parser: tseslint.parser, 
+                sourceType: 'module',
+                ecmaFeatures: {
+                    jsx: true,
+                    tsx: true
+                } 
+            } 
+        } 
+    },
+    unocss,
+    {
+        rules: {
+            'unocss/order': 'warn',
+            'unocss/order-attributify': 'off',
+            'vue/max-attributes-per-line': ['error', {
+                singleline: {
+                    max: 7
+                },      
+                multiline: {
+                    max: 1
+                }
+            }],
+            'vue/singleline-html-element-content-newline': 'off',
+            'vue/multiline-html-element-content-newline':'off',
+            'vue/html-indent': ['error', 4],
+            indent: ['error', 4], // 4行缩进
+            'vue/script-indent': ['error', 4],
+            quotes: ['error', 'single'], // 单引号
+            'vue/html-quotes': ['error', 'single'],
+            semi: ['error', 'never'], // 禁止使用分号
+            'space-infix-ops': 'error', // 运算符之间留有间距
+            'no-multi-spaces': 'error', // 禁止多个空格
+            'no-whitespace-before-property': 'error', // 禁止在属性前使用空格
+            'space-before-blocks': 'error', // 在块之前强制保持一致的间距
+            'space-before-function-paren': ['error', 'never'], // 在“ function”定义打开括号之前强制不加空格
+            'space-in-parens': ['error', 'never'], // 强制括号左右的不加空格
+            'spaced-comment': ['error', 'always'], // 注释间隔
+            'template-tag-spacing': ['error', 'always'], // 在模板标签及其文字之间需要空格
+            'no-var': 'error',
+            'prefer-destructuring': ['error', { // 优先使用数组和对象解构
+                array: true,
+                object: true
+            }, {
+                enforceForRenamedProperties: false
+            }],
+            // 组件名称为多个单词，忽略的组件名称
+            'vue/multi-word-component-names': ['off'],
+            'comma-dangle': ['error', 'never'], // 最后一个属性不允许有逗号
+            'arrow-spacing': 'error', // 箭头函数空格
+            'prefer-template': 'error',
+            'template-curly-spacing': 'error',
+            'quote-props': ['error', 'as-needed'], // 对象字面量属性名称使用引号
+            'object-curly-spacing': ['error', 'always'], // 强制在花括号中使用一致的空格
+            'no-unneeded-ternary': 'error', // 禁止可以表达为更简单结构的三元操作符
+            'no-restricted-syntax': ['error', 'WithStatement', 'BinaryExpression[operator="in"]'], // 禁止with/in语句
+            'no-lonely-if': 'error', // 禁止 if 语句作为唯一语句出现在 else 语句块中
+            'newline-per-chained-call': ['error', { ignoreChainWithDepth: 2 }], // 要求方法链中每个调用都有一个换行符
+            'vue/no-unused-vars': 'off',
+            'no-unused-vars': 'off',
+            // 路径别名设置
+            'no-submodule-imports': ['off', '@'],
+            'no-implicit-dependencies': ['off', ['@']],
+            'vue/one-component-per-file': 'off',
+            'vue/require-default-prop': 'off',
+            '@typescript-eslint/no-unused-vars': [1],
+            '@typescript-eslint/no-explicit-any': 'off', // 类型可以使用any 
+            '@typescript-eslint/no-non-null-assertion': 'off',
+            '@typescript-eslint/no-unused-expressions': 'off',
+            'no-undef': 'off',
+            'no-useless-escape': 'off',
+            'no-empty': 'off',
+            '@typescript-eslint/no-empty-object-type': 'off',
+            'no-prototype-builtins': 'off',
+            'no-case-declarations': 'off',
+            'no-extra-boolean-cast': 'off',
+            'vue/no-dupe-keys': 'off'
+        }
+    },
+    {
+        ignores: ['node_modules/*', 'dist/*', 'public/*']
+    }
+]
