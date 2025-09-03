@@ -1,23 +1,26 @@
 <template>
     <div class='h-full flex'>
-        <el-card class='eps-card-flex w-1/2' shadow='never'>
+        <el-card class='eps-card-flex h-full w-1/2' shadow='never'>
             <el-form ref='ruleFormRef' :model='ruleForm' :rules='rules' label-width='80px'>
                 <el-form-item label='请求地址' prop='url'>
                     <el-input v-model='ruleForm.url' placeholder='请输入请求地址' />
                 </el-form-item>
                 <el-form-item label='请求类型' prop='method'>
-                    <el-radio-group v-model='ruleForm.method'>
-                        <el-radio value='GET'>get</el-radio>
-                        <el-radio value='POST'>post</el-radio>
-                        <el-radio value='DELETE'>delete</el-radio>
-                        <el-radio value='PUT'>put</el-radio>
-                    </el-radio-group>
+                    <el-select v-model='ruleForm.method'>
+                        <el-option value='GET'>GET</el-option>
+                        <el-option value='POST'>POST</el-option>
+                        <el-option value='DELETE'>DELETE</el-option>
+                        <el-option value='PUT'>PUT</el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label='headers' prop='headers'>
+                    <EpsCodeJs v-model='ruleForm.headers' :line-numbers='false' height='70px' placeholder='请输入请求headers' />
                 </el-form-item>
                 <el-form-item label='params' prop='params'>
-                    <el-input v-model='ruleForm.params' type='textarea' :rows='3' placeholder='请输入请求params' />
+                    <EpsCodeJs v-model='ruleForm.params' :line-numbers='false' height='70px' placeholder='请输入请求params' />
                 </el-form-item>
                 <el-form-item label='data' prop='data'>
-                    <el-input v-model='ruleForm.data' type='textarea' :rows='6' placeholder='请输入请求data' />
+                    <EpsCodeJs v-model='ruleForm.data' :line-numbers='false' height='150px' placeholder='请输入请求data' />
                 </el-form-item>
                 <el-form-item>
                     <el-button type='primary' @click='submitForm(ruleFormRef)'>发送请求</el-button>
@@ -25,7 +28,7 @@
                 </el-form-item>
             </el-form>
         </el-card>
-        <div class='h-full w-1/2'><el-input v-model='responseData' type='textarea' :rows='4' readonly class='h-full' /></div>
+        <div class='h-full w-1/2'><EpsCodeJs v-model='responseData' is-readonly class='res-code' /></div>
     </div>
 </template>
 <script setup lang='ts'>
@@ -36,11 +39,13 @@ interface IForm {
     method: string
     data: string
     params: string
+    headers: string
 }
 const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive<IForm>({
     url: '',
     method: 'GET',
+    headers: '{"authenticate":""}',
     data: '',
     params: ''
 })
@@ -62,27 +67,36 @@ const rules = reactive<FormRules<IForm>>({
 
 const submitForm = async(formEl: FormInstance | undefined) => {
     if(!await epsFormSubmit(formEl)) return
-    // const { close } = await epsLayerLoading()
-    // let data = {}
-    // let params = {}
-    // try {
-    //     data = JSON.parse(ruleForm.data || '{}')
-    // } catch {}
-    // try {
-    //     params = JSON.parse(ruleForm.params || '{}')
-    // } catch {}
-    responseData.value = ''
+    const { close } = await epsLayerLoading()
+    let data = {}
+    let params = {}
+    let headers = {}
     try {
-        // const res = await request({
-        //     url: ruleForm.url,
-        //     method: ruleForm.method,
-        //     params,
-        //     data
-        // })
-        // responseData.value = JSON.stringify(res.data, null, 4)
-
-    } catch (error: any) {
-        console.log(error)
+        data = JSON.parse(ruleForm.data || '{}')
+    } catch {}
+    try {
+        params = JSON.parse(ruleForm.params || '{}')
+    } catch {}
+    try {
+        headers = JSON.parse(ruleForm.headers || '{}')
+    } catch {}
+    responseData.value = ''
+    const res = await window.electronAPI.invoke('fetch', {
+        url: ruleForm.url,
+        method: ruleForm.method,
+        headers,
+        params,
+        data
+    })
+    close()
+    try {
+        if(typeof res == 'string') {
+            responseData.value = res.replace(/\n/,'\r\n')
+        }else{
+            responseData.value = JSON.stringify(res, null, 4)
+        }
+    } catch {
+        
     }
 }
 
@@ -93,7 +107,7 @@ const resetForm = (formEl: FormInstance | undefined) => {
 </script>
 
 <style scoped>
-    :deep(.el-textarea__inner) {
-        height: 100%;
+    .res-code{
+        height: calc(100% - 5px) !important;
     }
 </style>

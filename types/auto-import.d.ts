@@ -42,8 +42,10 @@ declare global {
   const epsLayerMsg: typeof import('../src/hooks/layer')['epsLayerMsg']
   const epsLayerNotice: typeof import('../src/hooks/layer')['epsLayerNotice']
   const epsLayerPrompt: typeof import('../src/hooks/layer')['epsLayerPrompt']
+  const epsLogWarn: typeof import('../src/hooks/layer')['epsLogWarn']
   const epsPathRedirect: typeof import('../src/utils/const')['epsPathRedirect']
   const epsPathRoot: typeof import('../src/utils/const')['epsPathRoot']
+  const epsSleep: typeof import('../src/utils/tools')['epsSleep']
   const extendRef: typeof import('@vueuse/core')['extendRef']
   const getCurrentInstance: typeof import('vue')['getCurrentInstance']
   const getCurrentScope: typeof import('vue')['getCurrentScope']
@@ -343,8 +345,10 @@ declare module 'vue' {
     readonly epsLayerMsg: UnwrapRef<typeof import('../src/hooks/layer')['epsLayerMsg']>
     readonly epsLayerNotice: UnwrapRef<typeof import('../src/hooks/layer')['epsLayerNotice']>
     readonly epsLayerPrompt: UnwrapRef<typeof import('../src/hooks/layer')['epsLayerPrompt']>
+    readonly epsLogWarn: UnwrapRef<typeof import('../src/hooks/layer')['epsLogWarn']>
     readonly epsPathRedirect: UnwrapRef<typeof import('../src/utils/const')['epsPathRedirect']>
     readonly epsPathRoot: UnwrapRef<typeof import('../src/utils/const')['epsPathRoot']>
+    readonly epsSleep: UnwrapRef<typeof import('../src/utils/tools')['epsSleep']>
     readonly extendRef: UnwrapRef<typeof import('@vueuse/core')['extendRef']>
     readonly getCurrentInstance: UnwrapRef<typeof import('vue')['getCurrentInstance']>
     readonly getCurrentScope: UnwrapRef<typeof import('vue')['getCurrentScope']>

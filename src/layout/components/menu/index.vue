@@ -1,6 +1,6 @@
 <template>
     <el-menu
-        default-active='2'
+        :default-active='activeMenu'
         class='layout-menu-content'
         :collapse='useStoreLayout.isCollapsed'
         :collapse-transition='false'
@@ -13,7 +13,8 @@
 <script setup lang='ts'>
 import MenuItem from './menuItem.vue'
 import menu from '@/data/menu'
-
+const route = useRoute()
+const activeMenu = computed(() => route.path)
 </script>
 
 <style scoped>

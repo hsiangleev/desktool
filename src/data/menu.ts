@@ -28,7 +28,26 @@ const menu: IMenu[] = [
                 id: '102',
                 path: '/tools',
                 component: routerMenu['tools/tools'],
-                meta: { menuName: 'powershell工具', menuType: 2 }
+                meta: { menuName: '系统工具', menuType: 2 }
+            }
+        ]
+    },
+    {
+        id: '201',
+        path: '/git',
+        meta: { icon: 'ant-design:tool-outlined', menuName: 'git操作', menuType: 1 },
+        children: [
+            {
+                id: '202',
+                path: '/clone',
+                component: routerMenu['git/clone'],
+                meta: { menuName: '克隆项目', menuType: 2 }
+            },
+            {
+                id: '203',
+                path: '/merge',
+                component: routerMenu['git/merge'],
+                meta: { menuName: '合并分支', menuType: 2 }
             }
         ]
     }

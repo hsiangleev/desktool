@@ -1,0 +1,96 @@
+<template>
+    <div class='h-full flex'>
+        <el-card class='h-full w-1/2' shadow='never'>
+            <el-form ref='ruleFormRef' :model='form' :rules='rules' label-width='80px'>
+                <el-form-item label='根目录' prop='rootPath'>
+                    <EpsSelectDir v-model='form.rootPath' @change='changeRootPath' />
+                </el-form-item>
+                <el-form-item label='原始分支' prop='originBranch'>
+                    <el-select v-model='form.originBranch' :options='branchOptions' placeholder='请选择原始分支' filterable allow-create />
+                </el-form-item>
+                <el-form-item label='目标分支' prop='targetBranch'>
+                    <el-select v-model='form.targetBranch' :options='branchOptions' placeholder='请选择目标分支' filterable allow-create />
+                </el-form-item>
+                <el-form-item label='选择项目' prop='project'>
+                    <el-select v-model='form.project' :options='projectOptions' multiple placeholder='请选择项目' clearable />
+                </el-form-item>
+                <el-form-item>
+                    <el-button type='primary' @click='submitForm(ruleFormRef)'>合并</el-button>
+                    <el-button @click='resetForm(ruleFormRef)'>重置</el-button>
+                </el-form-item>
+            </el-form>
+        </el-card>
+        <div class='h-full w-1/2'><EpsCodeJs ref='codeRef' v-model='log' is-readonly class='res-code' /></div>
+    </div>
+</template>
+<script setup lang='ts'>
+import type { FormInstance, FormItemRule } from 'element-plus'
+import type { Arrayable } from 'element-plus/es/utils/typescript.mjs'
+
+const form = reactive({
+    rootPath: 'D:/epaas',
+    originBranch: 'dev',
+    targetBranch: 'test',
+    project: []
+})
+const codeRef = ref()
+const log = ref('')
+const ruleFormRef = ref()
+const branchOptions = ref([
+    { value: 'dev', label: 'dev' },
+    { value: 'test', label: 'test' },
+    { value: 'stable-pedpl', label: 'stable-pedpl' },
+    { value: 'stable-urp', label: 'stable-urp' }
+])
+const projectOptions = ref([])
+const rules = ref<Partial<Record<string, Arrayable<FormItemRule>>>>({
+    rootPath: { required: true, message: '项目根目录不能为空' },
+    project: { required: true, message: '请选择项目' }
+})
+
+const changeRootPath = () => {
+    projectOptions.value = []
+    log.value = ''
+    loadProject()
+}
+const loadProject = async() => {
+    if(!form.rootPath) return epsLayerMsg('项目根目录不能为空', 'warning')
+    const { close } = await epsLayerLoading()
+    const { errMsg, fileList, err } = await window.electronAPI.invoke('readdir', form.rootPath)
+    close()
+    if(errMsg) {
+        log.value = `${err}`
+        return epsLayerMsg(errMsg, 'error')
+    }
+    projectOptions.value = fileList.map((v:any) => ({ value: `${v.parentPath}/${v.name}`, label: v.name }))
+}
+
+window.electronAPI.on('gitMerge', (_, res) => log.value += `\r\n${res}`)
+const submitForm = async(formEl: FormInstance | undefined) => {
+    if(!await epsFormSubmit(formEl)) return
+    try {
+        await epsLayerConfirm('确认是否合并？', 'warning')
+        log.value = '开始合并'
+        await window.electronAPI.invoke('gitMerge', {
+            dirList: form.project.map(v => v), 
+            origin: form.originBranch, 
+            target: form.targetBranch
+        })
+    } catch {}
+}
+
+const resetForm = (formEl: FormInstance | undefined) => {
+    if (!formEl) return
+    formEl.resetFields()
+}
+
+onMounted(() => {
+    form.rootPath && loadProject()
+})
+</script>
+
+<style scoped>
+    .res-code{
+        height: calc(100% - 5px) !important;
+    }
+</style>

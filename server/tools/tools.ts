@@ -1,0 +1,73 @@
+import { Socket } from 'net'
+import fs from 'fs'
+
+export const useTelnetTest = (host: string, port: number, timeout = 3000) => {
+    return new Promise((resolve) => {
+        const socket = new Socket()
+
+        socket.setTimeout(timeout)
+
+        socket.on('connect', () => {
+            console.log()
+            socket.destroy()
+            resolve({
+                isConnect: true,
+                type: 'success',
+                msg: `连接成功: ${host}:${port}`
+            })
+        })
+
+        socket.on('timeout', () => {
+            socket.destroy()
+            resolve({
+                isConnect: true,
+                type: 'warning',
+                msg: `连接超时: ${host}:${port}`
+            })
+        })
+
+        socket.on('error', (err) => {
+            socket.destroy()
+            resolve({
+                isConnect: true,
+                type: 'error',
+                msg: `连接失败: ${err.message}`
+            })
+        })
+
+        socket.connect(port, host)
+    })
+}
+
+export const useReaddir = (dir: string) => {
+    let fileList: any[] = []
+    let errMsg = ''
+    let err = null
+    try {
+        fileList = fs
+            .readdirSync(dir, { withFileTypes: true })
+            .filter(dirent => dirent.isDirectory())
+    } catch (error: any) {
+        if(error.errno === -4058 && error.code === 'ENOENT') {
+            errMsg = `文件目录${dir}不存在`
+        }
+        err = error
+    }
+    return {
+        fileList,
+        errMsg,
+        err
+    }
+}
+
+/**
+ * 睡眠函数
+ * @param time 
+ */
+export async function useSleep(time:number):Promise<void> {
+    await new Promise(resolve => {
+        setTimeout(() => {
+            resolve('')
+        }, time)
+    })
+}

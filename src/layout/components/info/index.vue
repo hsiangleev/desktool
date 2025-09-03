@@ -7,7 +7,7 @@
     </p>
 </template>
 <script setup lang='ts'>
-import logo from '@/assets/images/favicon.ico'
+import logo from '/favicon.ico'
 </script>
 
 <style scoped>

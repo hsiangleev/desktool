@@ -160,3 +160,10 @@ export async function epsLayerNotice(title: string, message: string | string[], 
         dangerouslyUseHTMLString: Array.isArray(message)
     })
 }
+
+/**
+ * 警告
+ * @param msg 警告的内容
+ * @returns 
+ */
+export const epsLogWarn = (msg: string) => console.warn(`[admin]: ${msg}`)

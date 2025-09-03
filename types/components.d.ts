@@ -8,7 +8,10 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    EpsCodeJs: typeof import('./../src/components/EpsCodemirror/EpsCodeJs.vue')['default']
+    EpsCodemirror: typeof import('./../src/components/EpsCodemirror/EpsCodemirror.vue')['default']
     EpsIcon: typeof import('./../src/components/icon/EpsIcon.vue')['default']
+    EpsSelectDir: typeof import('./../src/components/file/EpsSelectDir.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }
