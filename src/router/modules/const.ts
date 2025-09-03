@@ -12,16 +12,8 @@ const constantRoutes = [
                 component: routerMenu['dashboard/workspace']
             },
             {
-                path: '/403',
-                component: routerMenu['errorPage/403']
-            },
-            {
-                path: '/error',
-                component: routerMenu['errorPage/error']
-            },
-            {
                 path: '/404',
-                component: routerMenu['errorPage/404']
+                component: routerMenu['dashboard/workspace']
             }
         ]
     },

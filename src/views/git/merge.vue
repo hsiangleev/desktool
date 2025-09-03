@@ -3,13 +3,13 @@
         <el-card class='h-full w-1/2' shadow='never'>
             <el-form ref='ruleFormRef' :model='form' :rules='rules' label-width='80px'>
                 <el-form-item label='根目录' prop='rootPath'>
-                    <EpsSelectDir v-model='form.rootPath' @change='changeRootPath' />
+                    <EpsSelectDir v-model='form.rootPath' type='merge' @change='changeRootPath' />
                 </el-form-item>
                 <el-form-item label='原始分支' prop='originBranch'>
-                    <el-select v-model='form.originBranch' :options='branchOptions' placeholder='请选择原始分支' filterable allow-create />
+                    <el-select v-model='form.originBranch' :options='epsBranchOptions' placeholder='请选择原始分支' filterable allow-create />
                 </el-form-item>
                 <el-form-item label='目标分支' prop='targetBranch'>
-                    <el-select v-model='form.targetBranch' :options='branchOptions' placeholder='请选择目标分支' filterable allow-create />
+                    <el-select v-model='form.targetBranch' :options='epsBranchOptions' placeholder='请选择目标分支' filterable allow-create />
                 </el-form-item>
                 <el-form-item label='选择项目' prop='project'>
                     <el-select v-model='form.project' :options='projectOptions' multiple placeholder='请选择项目' clearable />
@@ -20,7 +20,7 @@
                 </el-form-item>
             </el-form>
         </el-card>
-        <div class='h-full w-1/2'><EpsCodeJs ref='codeRef' v-model='log' is-readonly class='res-code' /></div>
+        <div class='h-full w-1/2'><EpsCodeJs ref='codeRef' v-model='log' is-readonly class='res-log' /></div>
     </div>
 </template>
 <script setup lang='ts'>
@@ -28,26 +28,21 @@ import type { FormInstance, FormItemRule } from 'element-plus'
 import type { Arrayable } from 'element-plus/es/utils/typescript.mjs'
 
 const form = reactive({
-    rootPath: 'D:/epaas',
-    originBranch: 'dev',
-    targetBranch: 'test',
+    rootPath: '',
+    originBranch: '',
+    targetBranch: '',
     project: []
 })
 const codeRef = ref()
 const log = ref('')
 const ruleFormRef = ref()
-const branchOptions = ref([
-    { value: 'dev', label: 'dev' },
-    { value: 'test', label: 'test' },
-    { value: 'stable-pedpl', label: 'stable-pedpl' },
-    { value: 'stable-urp', label: 'stable-urp' }
-])
 const projectOptions = ref([])
 const rules = ref<Partial<Record<string, Arrayable<FormItemRule>>>>({
     rootPath: { required: true, message: '项目根目录不能为空' },
+    originBranch: { required: true, message: '原始分支不能为空' },
+    targetBranch: { required: true, message: '目标分支不能为空' },
     project: { required: true, message: '请选择项目' }
 })
-
 const changeRootPath = () => {
     projectOptions.value = []
     log.value = ''
@@ -62,10 +57,10 @@ const loadProject = async() => {
         log.value = `${err}`
         return epsLayerMsg(errMsg, 'error')
     }
-    projectOptions.value = fileList.map((v:any) => ({ value: `${v.parentPath}/${v.name}`, label: v.name }))
+    projectOptions.value = fileList.map((v:any) => ({ value: `${v.parentPath.replace(/\\/g,'/')}/${v.name}`, label: v.name }))
 }
 
-window.electronAPI.on('gitMerge', (_, res) => log.value += `\r\n${res}`)
+window.electronAPI.on('gitMerge', (_, res) => codeRef.value?.appendText(res))
 const submitForm = async(formEl: FormInstance | undefined) => {
     if(!await epsFormSubmit(formEl)) return
     try {
@@ -88,9 +83,3 @@ onMounted(() => {
     form.rootPath && loadProject()
 })
 </script>
-
-<style scoped>
-    .res-code{
-        height: calc(100% - 5px) !important;
-    }
-</style>

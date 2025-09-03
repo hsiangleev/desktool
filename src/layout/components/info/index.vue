@@ -2,7 +2,7 @@
     <p v-if='!useStoreLayout.isCollapsed' class='footer-color w-full flex items-center text-center text-xs tracking-wider'>
         <el-image class='layout-img' :src='logo' /> 
         <span>&nbsp;2025&nbsp;</span> 
-        <el-link type='info' class='footer-color text-xs' underline='never' href='http://hsianglee.cn/' target='_blank'> hsianglee</el-link> 
+        <el-text class='footer-color text-xs'>hsianglee</el-text>
         <!-- <span>&nbsp;开发维护</span> -->
     </p>
 </template>

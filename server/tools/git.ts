@@ -1,27 +1,29 @@
-import { spawn, type ChildProcessWithoutNullStreams } from 'child_process'
 import type { BrowserWindow } from 'electron'
 import path from 'path'
 import kill from 'tree-kill'
 import simpleGit from 'simple-git'
+import spawn from 'cross-spawn'
+import { type ChildProcess } from 'child_process'
 
-let git: ChildProcessWithoutNullStreams | null = null
+let processItem: ChildProcess | null = null
 
-const gitCommand = (win: BrowserWindow, channel: string, args: string[], cwd?: string) => {
+/** 执行系统命令 */
+export const spawnCommand = (win: BrowserWindow, channel: string, command: string, args: string[], cwd?: string) => {
     return new Promise(resolve => {
-        const git = spawn('git', args, { cwd })
+        processItem = spawn(command, args, { cwd })
 
         // 打印标准输出
-        git.stdout.on('data', (data) => {
+        processItem.stdout?.on('data', (data) => {
             win.webContents.send(channel, data.toString())
         })
 
         // 打印错误输出
-        git.stderr.on('data', (data) => {
+        processItem.stderr?.on('data', (data) => {
             win.webContents.send(channel, data.toString())
         })
 
         // 结束
-        git.on('close', (code) => {
+        processItem.on('close', (code) => {
             if (code === 0) {
                 win.webContents.send(channel, '操作完成')
             } else {
@@ -32,20 +34,20 @@ const gitCommand = (win: BrowserWindow, channel: string, args: string[], cwd?: s
     })
 }
 
-export const gitStop = async() => {
+export const processStop = async() => {
     return new Promise(resolve => {
-        if(git && git.pid) {
-            kill(git.pid, 'SIGKILL', (err) => {
+        if(processItem && processItem.pid) {
+            kill(processItem.pid, 'SIGKILL', (err) => {
                 if (err) resolve('❌ 结束失败:')
                 else resolve('✅ 已终止')
             })
-            git = null
+            processItem = null
         }
     })
 }
 
-// 储存
-const gitStashIn = async(win: BrowserWindow, channel: string, cwd: string) => {
+/** 储存 */
+export const gitStashIn = async(win: BrowserWindow, channel: string, cwd: string) => {
     const git = simpleGit(cwd)
     try {
         const status = await git.status()
@@ -60,8 +62,8 @@ const gitStashIn = async(win: BrowserWindow, channel: string, cwd: string) => {
     }
 }
 
-// 应用储存
-const gitStashOut = async(win: BrowserWindow, channel: string, cwd: string) => {
+/** 应用储存 */
+export const gitStashOut = async(win: BrowserWindow, channel: string, cwd: string) => {
     const git = simpleGit(cwd)
     try {
         const stashList = await git.stashList()
@@ -75,8 +77,8 @@ const gitStashOut = async(win: BrowserWindow, channel: string, cwd: string) => {
     }
 }
 
-// 切换分支
-const switchOrCreateBranch = async(win: BrowserWindow, channel: string, cwd: string, branchName: string) => {
+/** 切换分支 */
+export const switchOrCreateBranch = async(win: BrowserWindow, channel: string, cwd: string, branchName: string) => {
     const git = simpleGit(cwd)
     try {
         // 获取本地分支
@@ -106,22 +108,49 @@ const switchOrCreateBranch = async(win: BrowserWindow, channel: string, cwd: str
     }
 }
 
+const isExistBranch = async(cwd: string, branchName: string) => {
+    const git = simpleGit(cwd)
+    try {
+        const localBranches = await git.branchLocal()
+        if (localBranches.all.includes(branchName)) return true
+        await git.fetch()
+        const remoteBranches = await git.branch(['-r'])
+        const remoteBranchFull = `origin/${branchName}`
+        return remoteBranches.all.includes(remoteBranchFull)
+    } catch {
+        return false
+    }
+}
+
+/** 获取当前是哪个分支 */
+export const getCurrentBranch = async(cwd: string) => {
+    const git = simpleGit(cwd)
+    const branch = await git.revparse(['--abbrev-ref', 'HEAD'])
+    return branch.trim()
+}
+
 export const gitClone = async(win: BrowserWindow, repoUrl: string, targetDir: string) => {
     const fileName = repoUrl.match(/([^/]+)(?=\.git$)/)
     const target = path.resolve(targetDir, fileName ? fileName[1] : '')
-    await gitCommand(win, 'gitClone', ['clone', '--progress', repoUrl, target])
+    await spawnCommand(win, 'gitClone', 'git', ['clone', '--progress', repoUrl, target])
 }
 
 export const gitMerge = async(win: BrowserWindow, cwds: string[], origin: string, target: string) => {
     for (const cwd of cwds) {
+        if(!(await isExistBranch(cwd, origin))) {
+            win.webContents.send('gitMerge', '原始分支不存在，请检查')
+            return
+        }
         win.webContents.send('gitMerge', '----------------------------------------')
         win.webContents.send('gitMerge', `${cwd}`)
+        const oldBranch = await getCurrentBranch(cwd)
         await gitStashIn(win, 'gitMerge', cwd)
-        await gitCommand(win, 'gitMerge', ['pull', '--progress'], cwd)
-        await switchOrCreateBranch(win, 'gitMerge', cwd, target)
-        await gitCommand(win, 'gitMerge', ['reset', '--hard', origin], cwd)
-        await gitCommand(win, 'gitMerge', ['push', '-f', '--progress'], cwd)
         await switchOrCreateBranch(win, 'gitMerge', cwd, origin)
+        await spawnCommand(win, 'gitMerge', 'git', ['pull', 'origin', origin, '--progress'], cwd)
+        await switchOrCreateBranch(win, 'gitMerge', cwd, target)
+        await spawnCommand(win, 'gitMerge', 'git', ['reset', '--hard', origin], cwd)
+        await spawnCommand(win, 'gitMerge', 'git', ['push', 'origin', target, '-f', '--progress'], cwd)
+        await switchOrCreateBranch(win, 'gitMerge', cwd, oldBranch)
         await gitStashOut(win, 'gitMerge', cwd)
         win.webContents.send('gitMerge', '----------------------------------------')
     }

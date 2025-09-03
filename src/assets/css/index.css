@@ -44,8 +44,8 @@ a {
 }
 
 ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+    width: 6px;
+    height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -66,4 +66,26 @@ a {
     left: 0;
     width: 100%;
     height: 2px;
+}
+
+/** 容器自动伸缩样式 */
+.eps-card-flex {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    & > .el-card__body {
+        display: block;
+        flex: 1;
+        flex-basis: auto;
+        overflow: auto;
+    }
+}
+
+.content-log {
+    height: calc(100% - 190px);
+}
+
+.res-log{
+    height: calc(100% - 5px) !important;
 }

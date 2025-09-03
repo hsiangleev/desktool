@@ -1,5 +1,7 @@
 import { Socket } from 'net'
 import fs from 'fs'
+import path from 'path'
+import { app } from 'electron'
 
 export const useTelnetTest = (host: string, port: number, timeout = 3000) => {
     return new Promise((resolve) => {
@@ -70,4 +72,20 @@ export async function useSleep(time:number):Promise<void> {
             resolve('')
         }, time)
     })
+}
+
+export const loadConfigFile = () => {
+    const configPath = path.join(app.getPath('userData'), 'config.json')
+    if (!fs.existsSync(configPath)) {
+        fs.writeFileSync(configPath, JSON.stringify({
+            publicRegistry: 'https://registry.npmmirror.com',
+            listBranch: [],
+            publicPackage: [],
+            updateVersion: []
+        }, null, 4))
+    }
+    return {
+        configPath,
+        config: JSON.parse(fs.readFileSync(configPath, 'utf-8'))
+    }
 }

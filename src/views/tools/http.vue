@@ -28,7 +28,7 @@
                 </el-form-item>
             </el-form>
         </el-card>
-        <div class='h-full w-1/2'><EpsCodeJs v-model='responseData' is-readonly class='res-code' /></div>
+        <div class='h-full w-1/2'><EpsCodeJs v-model='responseData' is-readonly class='res-log' /></div>
     </div>
 </template>
 <script setup lang='ts'>
@@ -105,9 +105,3 @@ const resetForm = (formEl: FormInstance | undefined) => {
     formEl.resetFields()
 }
 </script>
-
-<style scoped>
-    .res-code{
-        height: calc(100% - 5px) !important;
-    }
-</style>

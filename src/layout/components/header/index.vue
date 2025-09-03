@@ -19,6 +19,7 @@ import LayoutRightIcon from './rightIcon.vue'
 :deep(.layout-header-left-icon) {
     cursor: pointer;
     font-size: 18px;
+    -webkit-app-region: no-drag; /* 按钮不可拖动 */
 
     &:not(:last-child) {
         margin-right: 12px;

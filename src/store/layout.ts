@@ -12,6 +12,11 @@ export const IMenuStatus = {
 
 type IMenuStatusType = typeof IMenuStatus[keyof typeof IMenuStatus];
 
+class IConfig {
+    listBranch: string[] = []
+    publicPackage: string[] = []
+}
+
 export const useStoreLayout2 = () => {
     const { width } = useWindowSize()
     const isCollapsed = ref(width.value < 450)
@@ -24,11 +29,20 @@ export const useStoreLayout2 = () => {
 
     const updateCollapsed = () => isCollapsed.value = !isCollapsed.value
 
+    const config = ref(new IConfig())
+    const getConfig = async() => {
+        const { config: configs, configPath } = await window.electronAPI.invoke('getConfig')
+        console.log(`配置文件路径：${configPath}`)
+        config.value = configs
+    }
+    getConfig()
+
     return {
         width,
         isCollapsed,
         menuStatus,
         isLoading,
-        updateCollapsed
+        updateCollapsed,
+        config
     }
 }

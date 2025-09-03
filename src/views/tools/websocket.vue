@@ -1,0 +1,50 @@
+<template>
+    <el-card class='eps-card-flex h-full' shadow='never'>
+        <el-form ref='ruleFormRef' :model='form' label-width='100px' :rules='rules'>
+            <el-form-item prop='ip' label='连接地址'>
+                <el-input v-model='form.ip' placeholder='请输入连接地址' />
+            </el-form-item>
+            <el-form-item prop='isBase64' label='base64加密'>
+                <el-switch v-model='form.isBase64' />
+            </el-form-item>
+            <el-form-item>
+                <el-button type='primary' :disabled='form.isStart' plain @click='submitForm(ruleFormRef)'>连接</el-button>
+                <el-button :disabled='!form.isStart' @click='close'>停止</el-button>
+            </el-form-item>
+        </el-form>
+        <el-divider border-style='dashed'>日志</el-divider>
+        <div class='content-log'><EpsCodeJs ref='codeRef' v-model='log' is-readonly class='res-log' /></div>
+    </el-card>
+</template>
+<script setup lang='ts'>
+import type { FormInstance, FormItemRule } from 'element-plus'
+import type { Arrayable } from 'element-plus/es/utils/typescript.mjs'
+const { getSession, setSession } = epsSession()
+class IForm {
+    ip = ''
+    isBase64 = false
+    isStart = false
+}
+const form = reactive(getSession<IForm>('websocket') ?? new IForm())
+
+const ruleFormRef = ref()
+const rules = ref<Partial<Record<string, Arrayable<FormItemRule>>>>({
+    ip: { required: true, message: '连接地址不能为空' }
+})
+const log = ref(form.isStart ? '已连接' : '尚未连接')
+const codeRef = ref()
+window.electronAPI.on('connectWebsocket', (_, res) => codeRef.value?.appendText(res))
+const submitForm = async(formEl: FormInstance | undefined) => {
+    if(!await epsFormSubmit(formEl)) return
+    log.value = '开始连接中...'
+    await window.electronAPI.invoke('connectWebsocket', { ip: form.ip, isBase64: form.isBase64 })
+    form.isStart = true
+    setSession('websocket', form)
+}
+const close = async() => {
+    codeRef.value?.appendText('停止连接中...')
+    await window.electronAPI.invoke('closeWebsocket')
+    form.isStart = false
+    setSession('websocket', form)
+}
+</script>

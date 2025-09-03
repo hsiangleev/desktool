@@ -19,9 +19,6 @@ export default defineBuildConfig({
     },
     failOnWarn: false,
     externals: [
-        'electron',
-        'axios',
-        'simple-git',
-        'tree-kill'
+        'electron'
     ]
 })

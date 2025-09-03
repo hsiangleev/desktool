@@ -34,6 +34,7 @@ const resize = computed(() => cmRef.value?.resize)
 const destroy = computed(() => cmRef.value?.destroy)
 const codeInstance = computed(() => cmRef.value?.codeInstance)
 const insert = computed(() => cmRef.value?.insert)
+const appendText = computed(() => cmRef.value?.appendText)
 
 onUnmounted(() => {
     cmRef.value?.destroy()
@@ -43,6 +44,7 @@ defineExpose({
     resize,
     destroy,
     codeInstance,
-    insert
+    insert,
+    appendText
 })
 </script>

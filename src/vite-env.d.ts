@@ -14,5 +14,8 @@ declare interface Window {
     electronAPI: {
         invoke: (channel: string, ...args: any[]) => Promise<any>
         on(channel: string, listener: (event: Electron.IpcRendererEvent, ...args: any[]) => void): Electron.IpcRenderer
+        minimize: () => void
+        maximize: () => void
+        close: () => void
     }
 }

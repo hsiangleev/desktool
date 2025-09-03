@@ -81,11 +81,18 @@ const insert = async(text: string) => {
     // 设置光标位置（当前位置-选中的长度+替换的长度）
     inst.setCursor({ line, ch: ch - sel.length + text.length + 3 })
 }
+
+const appendText = (text: string) => {
+    const inst = codeInstance.value!
+    inst.setValue(`${inst.getValue()}\r\n${text}`)
+    inst.setCursor(inst.lineCount(), 0)
+}
 defineExpose({
     refresh,
     resize,
     destroy,
     codeInstance,
-    insert
+    insert,
+    appendText
 })
 </script>

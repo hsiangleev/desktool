@@ -3,7 +3,7 @@
         <el-card class='h-full w-1/2' shadow='never'>
             <el-form ref='ruleFormRef' :model='form' :rules='rules' label-width='80px'>
                 <el-form-item label='根目录' prop='rootPath'>
-                    <EpsSelectDir v-model='form.rootPath' @change='log=""' />
+                    <EpsSelectDir v-model='form.rootPath' type='clone' @change='log=""' />
                 </el-form-item>
                 <el-form-item label='克隆项目' prop='url'>
                     <el-input v-model='form.url' placeholder='请输入项目地址' />
@@ -15,7 +15,7 @@
                 </el-form-item>
             </el-form>
         </el-card>
-        <div class='h-full w-1/2'><EpsCodeJs :model-value='log.split("\r\n").reverse().join("\r\n")' is-readonly class='res-code' /></div>
+        <div class='h-full w-1/2'><EpsCodeJs ref='codeRef' :model-value='log' is-readonly class='res-log' /></div>
     </div>
 </template>
 <script setup lang='ts'>
@@ -23,30 +23,32 @@ import type { FormInstance, FormItemRule } from 'element-plus'
 import type { Arrayable } from 'element-plus/es/utils/typescript.mjs'
 
 const form = reactive({
-    rootPath: 'D:/epaas',
-    originBranch: 'dev',
-    targetBranch: 'test',
+    rootPath: '',
+    originBranch: '',
+    targetBranch: '',
     project: [],
     url: ''
 })
+const codeRef = ref()
 const log = ref('')
 const ruleFormRef = ref()
 const rules = ref<Partial<Record<string, Arrayable<FormItemRule>>>>({
     rootPath: { required: true, message: '项目根目录不能为空' },
+    originBranch: { required: true, message: '原始分支不能为空' },
+    targetBranch: { required: true, message: '目标分支不能为空' },
     url: { required: true, message: '项目地址不能为空' }
 })
 
 /** 克隆 */
-window.electronAPI.on('gitClone', (_, res) => log.value += `\r\n${res}`)
+window.electronAPI.on('gitClone', (_, res) => codeRef.value?.appendText(res))
 const cloneProject = async(formEl: FormInstance | undefined) => {
     if(!await epsFormSubmit(formEl)) return
     log.value = '开始克隆'
     await window.electronAPI.invoke('gitClone', { repoUrl: form.url, targetDir: form.rootPath })
 }
 const stopProject = async() => {
-    const res = await window.electronAPI.invoke('gitStop')
-    await epsSleep(1000)
-    log.value += `\r\n${res}`
+    const res = await window.electronAPI.invoke('processStop')
+    codeRef.value?.appendText(res)
 }
 
 const resetForm = (formEl: FormInstance | undefined) => {
@@ -54,9 +56,3 @@ const resetForm = (formEl: FormInstance | undefined) => {
     formEl.resetFields()
 }
 </script>
-
-<style scoped>
-    .res-code{
-        height: calc(100% - 5px) !important;
-    }
-</style>

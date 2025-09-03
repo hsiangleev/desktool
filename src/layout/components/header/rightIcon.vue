@@ -1,17 +1,12 @@
 <template>
     <div class='flex items-center'>
-        <eps-icon
-            class='layout-header-left-icon' 
-            :type='isFullscreen ? "ant-design:fullscreen-exit-outlined" : "ant-design:fullscreen-outlined"'
-            :title='isFullscreen ? "退出全屏" : "全屏"'
-            @click='toggle'
-        />
-        <!-- <eps-icon class='layout-header-left-icon' type='ep:bell' /> -->
+        <eps-icon class='layout-header-left-icon' type='ant-design:minus-outlined' title='最小化' @click='min' />
+        <eps-icon class='layout-header-left-icon' type='ant-design:border-outlined' title='最大化' @click='max' />
+        <eps-icon class='layout-header-left-icon' type='ep:close' title='关闭' @click='close' />
     </div>
 </template>
 <script setup lang='ts'>
-const isFullscreen = ref(false)
-const toggle = async() => {
-    
-}
+const min = async() => await window.electronAPI.minimize()
+const max = async() => await window.electronAPI.maximize()
+const close = async() => await window.electronAPI.close()
 </script>

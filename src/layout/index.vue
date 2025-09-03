@@ -60,6 +60,8 @@ const isMenuStatusPhone = computed(() => menuStatus.value === IMenuStatus.PHE ||
     border-bottom: 1px solid var(--el-border-color);
     background-color: var(--header-bg-color);
     color: var(--header-color);
+    -webkit-app-region: drag; /* 可拖动区域 */
+    user-select: none;
 }
 
 .layout-content {

@@ -1,10 +1,15 @@
 import { BrowserWindow, ipcMain, dialog } from 'electron'
-import { gitClone, gitMerge, gitStop } from '~/tools/git'
-import { useReaddir } from '~/tools/tools'
+import { gitClone, gitMerge, processStop } from '~/tools/git'
+import { updatePackage } from '~/tools/npm'
+import { loadConfigFile, useReaddir } from '~/tools/tools'
 
 export const useFile = (win: BrowserWindow) => {
     ipcMain.handle('readdir', async(_, dir) => {
         return useReaddir(dir)
+    })
+
+    ipcMain.handle('getConfig', async() => {
+        return loadConfigFile()
     })
 
     ipcMain.handle('sellectDir', async() => {
@@ -25,7 +30,12 @@ export const useFile = (win: BrowserWindow) => {
         await gitClone(win, repoUrl, targetDir)
     })
     
-    ipcMain.handle('gitStop', async() => {
-        return await gitStop()
+    ipcMain.handle('processStop', async() => {
+        return await processStop()
+    })
+    
+    ipcMain.handle('updatePackage', async(_, res) => {
+        const { dirList, packages, branch } = res
+        return await updatePackage(win, dirList, packages, branch)
     })
 }

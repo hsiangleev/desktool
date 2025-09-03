@@ -1,8 +1,7 @@
 import { app, BrowserWindow } from 'electron'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import { useHttp } from './module/http'
-import { useFile } from './module/file'
+import { useModule, close } from './module'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -15,6 +14,8 @@ function createWindow() {
         height: 650,
         icon: path.join(__dirname, '../assets/favicon.ico'),
         autoHideMenuBar: true,
+        frame: false, // 取消默认标题栏
+        titleBarStyle: 'hidden',
         webPreferences: {
             preload: path.join(__dirname, 'preload.cjs'),
             nodeIntegration: false,
@@ -29,11 +30,10 @@ function createWindow() {
     }
 
     win.on('closed', () => {
+        close()
         win = null
     })
-
-    useHttp()
-    useFile(win)
+    useModule(win)
 }
 
 app.whenReady().then(createWindow)
