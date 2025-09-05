@@ -53,3 +53,14 @@ export function epsFormClearValidate(formEl: FormInstance | undefined, filed: st
     if (!formEl) return
     formEl.clearValidate(filed)
 }
+
+export const loadProject = async(rootPath: string) => {
+    if(!rootPath) return epsLayerMsg('项目根目录不能为空', 'warning')
+    const { close } = await epsLayerLoading()
+    const { errMsg, fileList } = await window.electronAPI.invoke('readdir', rootPath)
+    close()
+    if(errMsg) {
+        return epsLayerMsg(errMsg, 'error')
+    }
+    return fileList.map((v:any) => ({ value: `${v.parentPath.replace(/\\/g,'/')}/${v.name}`, label: v.name }))
+}

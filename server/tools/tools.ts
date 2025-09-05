@@ -79,6 +79,8 @@ export const loadConfigFile = () => {
     if (!fs.existsSync(configPath)) {
         fs.writeFileSync(configPath, JSON.stringify({
             publicRegistry: 'https://registry.npmmirror.com',
+            gitlabUrl: '',
+            gitlabToken: '',
             listBranch: [],
             publicPackage: [],
             updateVersion: []

@@ -60,21 +60,10 @@ const rules = ref<Partial<Record<string, Arrayable<FormItemRule>>>>({
     package: { required: true, message: '更新包不能为空' }
 })
 
-const changeRootPath = () => {
+const changeRootPath = async() => {
     projectOptions.value = []
     log.value = ''
-    loadProject()
-}
-const loadProject = async() => {
-    if(!form.rootPath) return epsLayerMsg('项目根目录不能为空', 'warning')
-    const { close } = await epsLayerLoading()
-    const { errMsg, fileList, err } = await window.electronAPI.invoke('readdir', form.rootPath)
-    close()
-    if(errMsg) {
-        log.value = `${err}`
-        return epsLayerMsg(errMsg, 'error')
-    }
-    projectOptions.value = fileList.map((v:any) => ({ value: `${v.parentPath.replace(/\\/g,'/')}/${v.name}`, label: v.name }))
+    projectOptions.value = await loadProject(form.rootPath)
 }
 
 window.electronAPI.on('updatePackage', (_, res) => codeRef.value?.appendText(res))
@@ -96,7 +85,9 @@ const resetForm = (formEl: FormInstance | undefined) => {
     formEl.resetFields()
 }
 
-onMounted(() => {
-    form.rootPath && loadProject()
+onMounted(async() => {
+    if(form.rootPath) {
+        projectOptions.value = await loadProject(form.rootPath)
+    }
 })
 </script>

@@ -66,6 +66,12 @@ const menu: IMenu[] = [
                 path: '/merge',
                 component: routerMenu['git/merge'],
                 meta: { menuName: '合并分支', menuType: 2 }
+            },
+            {
+                id: '204',
+                path: '/updateGitlabFile',
+                component: routerMenu['git/updateGitlabFile'],
+                meta: { menuName: '同步gitlab文件', menuType: 2 }
             }
         ]
     },

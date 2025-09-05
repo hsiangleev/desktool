@@ -1,13 +1,14 @@
 import { BrowserWindow, ipcMain } from 'electron'
-import axios from 'axios'
 import { useTelnetTest } from '~/tools/tools'
+import { updateGitlabFile, useRequest } from '~/tools/http'
 import crypto from 'crypto'
-import { useHttpServe, useHttpServeClose, useWebsocket, useWebsocketClose } from '~/tools/websocket'
+import { useWebsocket, useWebsocketClose } from '~/tools/websocket'
+import { useHttpServe, useHttpServeClose } from '~/tools/http'
 
 export const useHttp = (win: BrowserWindow) => {
     ipcMain.handle('fetch', async(_, req) => {
         const { url, method, params, data, headers } = req
-        const res = await request({ url, method, params, data, headers })
+        const res = await useRequest({ url, method, params, data, headers })
         return res.data
     })
 
@@ -48,15 +49,9 @@ export const useHttp = (win: BrowserWindow) => {
     ipcMain.handle('closeHttpServe', async() => {
         return useHttpServeClose()
     })
-}
 
-
-const request = axios.create({
-    timeout: 60000 // 请求超时时间
-})
-// 异常拦截处理器
-const errorHandler = (error:any) => {
-    return Promise.resolve(error.response)
+    ipcMain.handle('updateGitlabFile', async(_, req) => {
+        const { rootPath, project, projectUrl, filePath, branch } = req
+        return updateGitlabFile(rootPath, project, projectUrl, filePath, branch)
+    })
 }
-request.interceptors.request.use(config => config, errorHandler)
-request.interceptors.response.use(response => response, errorHandler)

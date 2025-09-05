@@ -43,21 +43,9 @@ const rules = ref<Partial<Record<string, Arrayable<FormItemRule>>>>({
     targetBranch: { required: true, message: '目标分支不能为空' },
     project: { required: true, message: '请选择项目' }
 })
-const changeRootPath = () => {
-    projectOptions.value = []
+const changeRootPath = async() => {
     log.value = ''
-    loadProject()
-}
-const loadProject = async() => {
-    if(!form.rootPath) return epsLayerMsg('项目根目录不能为空', 'warning')
-    const { close } = await epsLayerLoading()
-    const { errMsg, fileList, err } = await window.electronAPI.invoke('readdir', form.rootPath)
-    close()
-    if(errMsg) {
-        log.value = `${err}`
-        return epsLayerMsg(errMsg, 'error')
-    }
-    projectOptions.value = fileList.map((v:any) => ({ value: `${v.parentPath.replace(/\\/g,'/')}/${v.name}`, label: v.name }))
+    projectOptions.value = await loadProject(form.rootPath)
 }
 
 window.electronAPI.on('gitMerge', (_, res) => codeRef.value?.appendText(res))
@@ -79,7 +67,9 @@ const resetForm = (formEl: FormInstance | undefined) => {
     formEl.resetFields()
 }
 
-onMounted(() => {
-    form.rootPath && loadProject()
+onMounted(async() => {
+    if(form.rootPath) {
+        projectOptions.value = await loadProject(form.rootPath)
+    }
 })
 </script>
