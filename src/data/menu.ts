@@ -46,7 +46,7 @@ const menu: IMenu[] = [
                 id: '105',
                 path: '/httpServe',
                 component: routerMenu['tools/httpServe'],
-                meta: { menuName: '静态服务', menuType: 2 }
+                meta: { menuName: '静态服务器', menuType: 2 }
             }
         ]
     },
