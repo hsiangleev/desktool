@@ -87,6 +87,31 @@ const menu: IMenu[] = [
                 meta: { menuName: '更新软件包', menuType: 2 }
             }
         ]
+    },
+    {
+        id: '401',
+        path: '/webview',
+        meta: { icon: 'ant-design:fund-view-outlined', menuName: 'webview', menuType: 1 },
+        children: [
+            {
+                id: '402',
+                path: '/chatgpt',
+                component: routerMenu['webview/chatgpt'],
+                meta: { menuName: 'chatgpt', menuType: 2 }
+            },
+            {
+                id: '403',
+                path: '/deepseek',
+                component: routerMenu['webview/deepseek'],
+                meta: { menuName: 'deepseek', menuType: 2 }
+            },
+            {
+                id: '404',
+                path: '/translate',
+                component: routerMenu['webview/translate'],
+                meta: { menuName: '谷歌翻译', menuType: 2 }
+            }
+        ]
     }
 ]
 

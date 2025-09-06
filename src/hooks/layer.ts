@@ -157,7 +157,8 @@ export async function epsLayerNotice(title: string, message: string | string[], 
         message: getMessage(message),
         type,
         duration,
-        dangerouslyUseHTMLString: Array.isArray(message)
+        dangerouslyUseHTMLString: Array.isArray(message),
+        offset: 42
     })
 }
 

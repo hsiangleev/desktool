@@ -6,7 +6,7 @@
     </div>
 </template>
 <script setup lang='ts'>
-const min = async() => await window.electronAPI.minimize()
-const max = async() => await window.electronAPI.maximize()
-const close = async() => await window.electronAPI.close()
+const min = async() => await window.electronAPI.send('window-control', 'minimize')
+const max = async() => await window.electronAPI.send('window-control', 'maximize')
+const close = async() => await window.electronAPI.send('window-control', 'close')
 </script>

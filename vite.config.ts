@@ -33,7 +33,13 @@ export default ({ mode }: ConfigEnv): UserConfigExport => {
             }
         },
         plugins: [
-            vue(),
+            vue({
+                template: {
+                    compilerOptions: {
+                        isCustomElement: tag => tag === 'webview'
+                    }
+                }
+            }),
             UnoCSS(),
             Components({
                 dts: 'types/components.d.ts',
