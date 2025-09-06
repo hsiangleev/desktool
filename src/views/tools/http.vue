@@ -90,13 +90,13 @@ const submitForm = async(formEl: FormInstance | undefined) => {
     })
     close()
     try {
-        if(typeof res == 'string') {
-            responseData.value = res.replace(/\n/,'\r\n')
+        if(typeof res.data == 'string') {
+            responseData.value = res.data.replace(/\n/,'\r\n')
         }else{
-            responseData.value = JSON.stringify(res, null, 4)
+            responseData.value = JSON.stringify(res.data, null, 4)
         }
     } catch {
-        
+        responseData.value = JSON.stringify(res, null, 4)
     }
 }
 

@@ -9,7 +9,7 @@
             </el-form-item>
             <el-form-item>
                 <el-button type='primary' :disabled='form.isStart' plain @click='submitForm(ruleFormRef)'>连接</el-button>
-                <el-button :disabled='!form.isStart' @click='close'>停止</el-button>
+                <el-button :disabled='!form.isStart' @click='close()'>停止</el-button>
             </el-form-item>
         </el-form>
         <el-divider border-style='dashed'>日志</el-divider>
@@ -33,7 +33,10 @@ const rules = ref<Partial<Record<string, Arrayable<FormItemRule>>>>({
 })
 const log = ref(form.isStart ? '已连接' : '尚未连接')
 const codeRef = ref()
-window.electronAPI.on('connectWebsocket', (_, res) => codeRef.value?.appendText(res))
+window.electronAPI.on('connectWebsocket', (_, res) => {
+    codeRef.value?.appendText(res.msg)
+    if(res.code !== 0) close(false)
+})
 const submitForm = async(formEl: FormInstance | undefined) => {
     if(!await epsFormSubmit(formEl)) return
     log.value = '开始连接中...'
@@ -41,8 +44,8 @@ const submitForm = async(formEl: FormInstance | undefined) => {
     form.isStart = true
     setSession('websocket', form)
 }
-const close = async() => {
-    codeRef.value?.appendText('停止连接中...')
+const close = async(ismsg = true) => {
+    ismsg && codeRef.value?.appendText('停止连接中...')
     await window.electronAPI.invoke('closeWebsocket')
     form.isStart = false
     setSession('websocket', form)

@@ -9,7 +9,12 @@ export const useHttp = (win: BrowserWindow) => {
     ipcMain.handle('fetch', async(_, req) => {
         const { url, method, params, data, headers } = req
         const res = await useRequest({ url, method, params, data, headers })
-        return res.data
+        return {
+            data: res.data,
+            headers: res.headers,
+            status: res.status,
+            statusText: res.statusText
+        }
     })
 
     ipcMain.handle('telnet', async(_, req) => {
