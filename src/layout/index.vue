@@ -25,6 +25,7 @@
             </el-aside>
             <el-container class='h-screen'>
                 <el-header class='layout-header h-12'><LayoutHeader /></el-header>
+                <el-header class='layout-tags h-8 flex items-center'><LayoutTag /></el-header>
                 <el-main class='layout-content'>
                     <LayoutContent />
                 </el-main>
@@ -38,6 +39,7 @@ import LayoutMenu from './components/menu/index.vue'
 import LayoutInfo from './components/info/index.vue'
 import LayoutHeader from './components/header/index.vue'
 import LayoutContent from './components/content/index.vue'
+import LayoutTag from './components/tag/index.vue'
 
 const { menuStatus, updateCollapsed } = toRefs(useStoreLayout)
 const isMenuStatusPhone = computed(() => menuStatus.value === IMenuStatus.PHE || menuStatus.value === IMenuStatus.PHN)
@@ -62,6 +64,12 @@ const isMenuStatusPhone = computed(() => menuStatus.value === IMenuStatus.PHE ||
     color: var(--header-color);
     -webkit-app-region: drag; /* 可拖动区域 */
     user-select: none;
+}
+
+.layout-tags {
+    box-sizing: content-box;
+    border-bottom: 1px solid #d8dce5;
+    box-shadow: 0 1px 3px 0 rgba(0,0,0,.12),0 0 3px 0 rgba(0,0,0,.04)
 }
 
 .layout-content {

@@ -20,31 +20,31 @@ const menu: IMenu[] = [
         children: [
             {
                 id: '101',
-                path: '/http',
+                path: '/tools/http',
                 component: routerMenu['tools/http'],
                 meta: { menuName: 'http请求', menuType: 2 }
             },
             {
                 id: '102',
-                path: '/tools',
+                path: '/tools/tools',
                 component: routerMenu['tools/tools'],
                 meta: { menuName: '系统工具', menuType: 2 }
             },
             {
                 id: '103',
-                path: '/encode',
+                path: '/tools/encode',
                 component: routerMenu['tools/encode'],
                 meta: { menuName: '字符串加密', menuType: 2 }
             },
             {
                 id: '104',
-                path: '/websocket',
+                path: '/tools/websocket',
                 component: routerMenu['tools/websocket'],
                 meta: { menuName: 'websocket连接', menuType: 2 }
             },
             {
                 id: '105',
-                path: '/httpServe',
+                path: '/tools/httpServe',
                 component: routerMenu['tools/httpServe'],
                 meta: { menuName: '静态服务器', menuType: 2 }
             }
@@ -57,19 +57,19 @@ const menu: IMenu[] = [
         children: [
             {
                 id: '202',
-                path: '/clone',
+                path: '/git/clone',
                 component: routerMenu['git/clone'],
                 meta: { menuName: '克隆项目', menuType: 2 }
             },
             {
                 id: '203',
-                path: '/merge',
+                path: '/git/merge',
                 component: routerMenu['git/merge'],
                 meta: { menuName: '合并分支', menuType: 2 }
             },
             {
                 id: '204',
-                path: '/updateGitlabFile',
+                path: '/git/updateGitlabFile',
                 component: routerMenu['git/updateGitlabFile'],
                 meta: { menuName: '同步gitlab文件', menuType: 2 }
             }
@@ -82,7 +82,7 @@ const menu: IMenu[] = [
         children: [
             {
                 id: '302',
-                path: '/updatePackage',
+                path: '/npm/updatePackage',
                 component: routerMenu['npm/updatePackage'],
                 meta: { menuName: '更新软件包', menuType: 2 }
             }
@@ -95,19 +95,19 @@ const menu: IMenu[] = [
         children: [
             {
                 id: '402',
-                path: '/chatgpt',
+                path: '/webview/chatgpt',
                 component: routerMenu['webview/chatgpt'],
                 meta: { menuName: 'chatgpt', menuType: 2 }
             },
             {
                 id: '403',
-                path: '/deepseek',
+                path: '/webview/deepseek',
                 component: routerMenu['webview/deepseek'],
                 meta: { menuName: 'deepseek', menuType: 2 }
             },
             {
                 id: '404',
-                path: '/translate',
+                path: '/webview/translate',
                 component: routerMenu['webview/translate'],
                 meta: { menuName: '谷歌翻译', menuType: 2 }
             }

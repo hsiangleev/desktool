@@ -9,7 +9,8 @@ const constantRoutes = [
             ...menu,
             {
                 path: '',
-                component: routerMenu['dashboard/workspace']
+                component: routerMenu['dashboard/workspace'],
+                meta: { menuName: '首页', menuType: 2 }
             },
             {
                 path: '/404',

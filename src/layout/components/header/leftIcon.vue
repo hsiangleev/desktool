@@ -9,5 +9,8 @@
 const { isCollapsed, updateCollapsed } = toRefs(useStoreLayout)
 const route = useRoute()
 const router = useRouter()
-const refresh = () => router.replace(`${epsPathRedirect}${route.fullPath}`)
+const refresh = () => {
+    router.replace(`${epsPathRedirect}${route.fullPath}`)
+    useStoreLayout.removeTag(route.fullPath)
+}
 </script>

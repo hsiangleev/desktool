@@ -2,7 +2,7 @@
     <router-view v-slot='{ Component, route }'>
         <template v-if='Component'>
             <transition name='fade-transform' mode='out-in'>
-                <keep-alive :include='cacheViewList'>
+                <keep-alive :include='useStoreLayout.cacheView'>
                     <component
                         :is='wrap(route, Component)'
                         :key='route.fullPath'
@@ -15,8 +15,6 @@
 </template>
 <script setup lang='ts'>
 import type { RouteLocationNormalized } from 'vue-router'
-
-const cacheViewList = ref([])
 
 const wrapperMap = new Map()
 const wrap = (route:RouteLocationNormalized, component:any) => {

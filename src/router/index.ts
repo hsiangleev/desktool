@@ -10,3 +10,7 @@ const router = createRouter({
 })
 
 export default router
+
+router.beforeEach(async(to) => {
+    useStoreLayout.setTag(to)
+})
