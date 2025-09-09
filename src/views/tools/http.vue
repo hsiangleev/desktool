@@ -90,7 +90,9 @@ const submitForm = async(formEl: FormInstance | undefined) => {
     })
     close()
     try {
-        if(typeof res.data == 'string') {
+        if(res.status >= 400) {
+            responseData.value = `状态码：${res.status}，状态信息：${res.statusText || res.data}`
+        }else if(typeof res.data == 'string') {
             responseData.value = res.data.replace(/\n/,'\r\n')
         }else{
             responseData.value = JSON.stringify(res.data, null, 4)

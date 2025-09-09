@@ -10,19 +10,33 @@
                 :disable-transitions='false'
                 :effect='tag.isActive ? "dark" : "plain"'
                 @close='useStoreLayout.closeTag(tag.path)'
+                @contextmenu.prevent.stop='showMenu(tag, $event)'
             >
                 <router-link :to='tag.path'>{{ tag.title }}</router-link>
             </el-tag>
         </div>
+        <EpsMenu ref='menuRef'>
+            <li @click='useStoreLayout.refresh()'>刷新</li>
+            <li @click='useStoreLayout.closeOtherTag(itemTag?.path)'>关闭其它</li>
+            <li @click='useStoreLayout.closeAllTag()'>关闭所有</li>
+        </EpsMenu>
     </el-scrollbar>
 </template>
 <script setup lang='ts'>
+import type EpsMenu from '@/components/menu/EpsMenu.vue'
+import { ITag } from '@/store/layout/tag'
 import type { ElScrollbar } from 'element-plus'
 
 const tagsRef = ref()
 const scrollbarRef = ref<InstanceType<typeof ElScrollbar>>()
 const handleScroll = (e:any) => scrollbarRef.value?.setScrollLeft(-e.wheelDelta / 4 + (scrollbarRef.value?.wrapRef?.scrollLeft || 0))
 
+const menuRef = ref<InstanceType<typeof EpsMenu>>()
+const itemTag = ref<ITag>()
+const showMenu = (tag: ITag, event:MouseEvent) => {
+    itemTag.value = tag
+    menuRef.value?.updateMenu(event)
+}
 const tagAndTagSpacing = 4
 // 添加nextTick为了更新最新的tagsRef的值
 watch(useStoreLayout.tagList, (v) => nextTick(() => {

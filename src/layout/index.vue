@@ -40,6 +40,7 @@ import LayoutInfo from './components/info/index.vue'
 import LayoutHeader from './components/header/index.vue'
 import LayoutContent from './components/content/index.vue'
 import LayoutTag from './components/tag/index.vue'
+import { IMenuStatus } from '@/store/layout/menu'
 
 const { menuStatus, updateCollapsed } = toRefs(useStoreLayout)
 const isMenuStatusPhone = computed(() => menuStatus.value === IMenuStatus.PHE || menuStatus.value === IMenuStatus.PHN)
