@@ -1,14 +1,16 @@
 <template>
-    <el-menu
-        :default-active='activeMenu'
-        class='layout-menu-content'
-        :collapse='useStoreLayout.isCollapsed'
-        :collapse-transition='false'
-        :unique-opened='true'
-        router
-    >
-        <MenuItem v-for='v in menu' :key='v.id' :menu='v' />
-    </el-menu>
+    <el-scrollbar class='h-full'>
+        <el-menu
+            :default-active='activeMenu'
+            class='layout-menu-content'
+            :collapse='useStoreLayout.isCollapsed'
+            :collapse-transition='false'
+            :unique-opened='true'
+            router
+        >
+            <MenuItem v-for='v in menu' :key='v.id' :menu='v' />
+        </el-menu>
+    </el-scrollbar>
 </template>
 <script setup lang='ts'>
 import MenuItem from './menuItem.vue'
@@ -20,31 +22,29 @@ const activeMenu = computed(() => route.path)
 <style scoped>
 .layout-menu-content{
     border: 0;
-    background-color: #304156;
+    background-color: var(--aside-bg-color);
 
     :deep(.el-menu) {
-        color: #ddd;
-        background-color: #000;
+        color: var(--aside-color);
+        background-color: #fff;
     }
 
     :deep(.el-sub-menu__title) {
-        color: #ddd;
-        background-color: #304156;
+        color: var(--aside-color);
+        background-color: var(--aside-bg-color);
     }
 
     :deep(.el-menu-item) {
-        color: #ddd;
+        color: var(--aside-color);
 
         &:hover {
-            background-color: #000;
+            background-color: #fff;
             color: var(--el-color-primary);
         }
     }
 
     :deep(.el-menu-item.is-active) {
-        background-color: var(--el-color-primary);
-        color: #fff;
+        background-color: var(--el-color-primary-light-8);
     }
 }
-
 </style>

@@ -1,5 +1,5 @@
 <template>
-    <el-card class='min-h-full'>
+    <div class='min-h-full'>
         <el-form ref='ruleFormRef' :model='form' :rules='rules' label-width='120px'>
             <el-form-item label='根目录' prop='rootPath'>
                 <EpsSelectDir v-model='form.rootPath' type='updateGitlabFile' @change='changeRootPath' />
@@ -21,7 +21,7 @@
                 <el-button @click='resetForm(ruleFormRef)'>重置</el-button>
             </el-form-item>
         </el-form>
-    </el-card>
+    </div>
 </template>
 <script setup lang='ts'>
 import type { FormInstance, FormRules } from 'element-plus'

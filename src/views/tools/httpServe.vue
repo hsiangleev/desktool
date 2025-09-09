@@ -1,5 +1,5 @@
 <template>
-    <el-card class='eps-card-flex h-full' shadow='never'>
+    <div class='eps-card-flex h-full' shadow='never'>
         <el-form ref='ruleFormRef' :model='form' label-width='100px' :rules='rules'>
             <el-form-item prop='baseDir' label='资源地址'>
                 <EpsSelectDir v-model='form.baseDir' />
@@ -14,7 +14,7 @@
         </el-form>
         <el-divider border-style='dashed'>日志</el-divider>
         <div class='content-log'><EpsCodeJs ref='codeRef' v-model='log' is-readonly class='res-log' /></div>
-    </el-card>
+    </div>
 </template>
 <script setup lang='ts'>
 import type { FormInstance, FormItemRule } from 'element-plus'

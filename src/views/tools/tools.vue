@@ -1,5 +1,5 @@
 <template>
-    <el-card class='min-h-full'>
+    <div class='min-h-full'>
         <el-form ref='ruleFormRef' :model='form' label-width='100px'>
             <el-form-item label='生成guid' prop='guid'>
                 <el-input v-model='form.guid' readonly placeholder='guid'>
@@ -13,7 +13,7 @@
                 </el-input>
             </el-form-item>
         </el-form>
-    </el-card>
+    </div>
 </template>
 <script setup lang='ts'>
 const form = reactive({

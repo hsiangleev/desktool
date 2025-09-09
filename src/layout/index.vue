@@ -24,8 +24,8 @@
                 </el-container>
             </el-aside>
             <el-container class='h-screen'>
-                <el-header class='layout-header h-12'><LayoutHeader /></el-header>
-                <el-header class='layout-tags h-8 flex items-center'><LayoutTag /></el-header>
+                <el-header class='layout-header h-12 px-3'><LayoutHeader /></el-header>
+                <el-header class='layout-tags h-8 flex items-center px-2'><LayoutTag /></el-header>
                 <el-main class='layout-content'>
                     <LayoutContent />
                 </el-main>
@@ -48,21 +48,22 @@ const isMenuStatusPhone = computed(() => menuStatus.value === IMenuStatus.PHE ||
 
 <style scoped>
 .layout-aside {
-    --aside-color: #c8c9cc;
+    --aside-color: #333;
+    --aside-bg-color: #f1f4f9;
 
     border-color: var(--el-border-color);
-    background-color: #304156;
+    background-color: var(--aside-bg-color);
     color: var(--aside-color);
     z-index: 999;
     transition-property: width;
     transition-duration: 200ms;
     overflow: hidden;
+    border-right: 1px solid #ddd;
+    box-sizing: content-box;
 }
 
 .layout-header {
     border-bottom: 1px solid var(--el-border-color);
-    background-color: var(--header-bg-color);
-    color: var(--header-color);
     -webkit-app-region: drag; /* 可拖动区域 */
     user-select: none;
 }

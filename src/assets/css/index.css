@@ -68,6 +68,12 @@ a {
     height: 2px;
 }
 
+/** 菜单pop样式 */
+.el-menu--vertical.el-menu--popup-container > .el-menu.el-menu--popup > li.el-menu-item {
+    height: 42px !important;
+    line-height: 42px !important;
+}
+
 /** 容器自动伸缩样式 */
 .eps-card-flex {
     height: 100%;

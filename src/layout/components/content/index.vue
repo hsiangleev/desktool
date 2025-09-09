@@ -6,7 +6,7 @@
                     <component
                         :is='wrap(route, Component)'
                         :key='route.fullPath'
-                        class='page relative h-full'
+                        class='page relative h-full p-3'
                     />
                 </keep-alive>
             </transition>

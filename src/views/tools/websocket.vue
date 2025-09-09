@@ -1,5 +1,5 @@
 <template>
-    <el-card class='eps-card-flex h-full' shadow='never'>
+    <div class='eps-card-flex h-full' shadow='never'>
         <el-form ref='ruleFormRef' :model='form' label-width='100px' :rules='rules'>
             <el-form-item prop='ip' label='连接地址'>
                 <el-input v-model='form.ip' placeholder='请输入连接地址' />
@@ -14,7 +14,7 @@
         </el-form>
         <el-divider border-style='dashed'>日志</el-divider>
         <div class='content-log'><EpsCodeJs ref='codeRef' v-model='log' is-readonly class='res-log' /></div>
-    </el-card>
+    </div>
 </template>
 <script setup lang='ts'>
 import type { FormInstance, FormItemRule } from 'element-plus'

@@ -76,6 +76,7 @@ export const useTag = () => {
         const currentTag = tagList.value.find(v => v.path === path)
         if(!currentTag) return
         tagList.value.splice(0, tagList.value.length, defaultTag(false), currentTag)
+        router.replace({ path })
         resetCacheView()
     }
     /** 刷新页面 */

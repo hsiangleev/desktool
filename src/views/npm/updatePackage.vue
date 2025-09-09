@@ -1,6 +1,6 @@
 <template>
     <div class='h-full flex'>
-        <el-card class='h-full w-1/2' shadow='never'>
+        <div class='h-full w-1/2' shadow='never'>
             <el-form ref='ruleFormRef' :model='form' :rules='rules' label-width='100px'>
                 <el-form-item label='根目录' prop='rootPath'>
                     <EpsSelectDir v-model='form.rootPath' type='updatePackage' @change='changeRootPath' />
@@ -31,7 +31,7 @@
                     <el-button @click='resetForm(ruleFormRef)'>重置</el-button>
                 </el-form-item>
             </el-form>
-        </el-card>
+        </div>
         <div class='h-full w-1/2'><EpsCodeJs ref='codeRef' v-model='log' is-readonly class='res-log' /></div>
     </div>
 </template>

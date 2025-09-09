@@ -1,5 +1,5 @@
 <template>
-    <el-card class='min-h-full'>
+    <div class='min-h-full'>
         <el-form ref='ruleFormRef' :model='form' label-width='60px'>
             <el-tabs model-value='base64'>
                 <el-tab-pane label='base64' name='base64'>
@@ -55,7 +55,7 @@
                 </el-tab-pane>
             </el-tabs>
         </el-form>
-    </el-card>
+    </div>
 </template>
 <script setup lang='ts'>
 import JSEncrypt from 'jsencrypt'
