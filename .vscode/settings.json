@@ -1,0 +1,28 @@
+{
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": "explicit",
+        "source.fixAll.tslint": "explicit",
+        "source.fixAll.stylelint": "explicit"
+    },
+    "editor.tabSize": 4,
+    "css.validate": false,
+    "scss.lint.unknownAtRules": "ignore",
+    "files.associations": {
+        "*.css": "css"
+    },
+    "less.validate": false,
+    "scss.validate": false,
+    "stylelint.validate": [
+        "vue",
+        "css",
+        "scss",
+        "postcss"
+    ],
+    "npm.exclude": ["**/dist"],
+    "explorer.fileNesting.enabled": true,
+    "explorer.fileNesting.expand": false,
+    "explorer.fileNesting.patterns": {
+        "vite.config.ts": "*.env, .env.*, .envrc, env.d.ts, uno.config.*, tsconfig.*,eslint.config.*,stylelint.config.*,.gitignore,build.config.ts, dockerfile",
+    },
+    "explorer.compactFolders": false,
+}
