@@ -19,7 +19,7 @@ const constantRoutes = [
         ]
     },
     {
-        path: epsPathRedirect,
+        path: '/redirect',
         component: routerMenu.layout,
         children: [
             {

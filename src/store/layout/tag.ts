@@ -64,12 +64,12 @@ export const useTag = () => {
     const closeAllTag = () => {
         tagList.value.splice(0, tagList.value.length, defaultTag())
         resetCacheView()
-        router.replace({ path: epsPathRoot })
+        router.replace({ path: '/' })
     }
     /** 关闭其他标签 */
     const closeOtherTag = (path?: string) => {
         if(!path) return
-        if(path === epsPathRoot) {
+        if(path === '/') {
             closeAllTag()
             return
         }
@@ -82,7 +82,7 @@ export const useTag = () => {
     /** 刷新页面 */
     const refresh = () => {
         const { fullPath } = router.currentRoute.value
-        router.replace(`${epsPathRedirect}${fullPath}`)
+        router.replace(`/redirect${fullPath}`)
         /** 删除当前页面缓存数据 */
         const index = cacheView.value.findIndex(v => v === fullPath)
         if(index < 0) return

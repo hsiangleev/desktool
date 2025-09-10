@@ -1,20 +1,13 @@
 import { BrowserWindow, ipcMain } from 'electron'
 import { useTelnetTest } from '~/tools/tools'
-import { updateGitlabFile, useRequest } from '~/tools/http'
+import { updateGitlabFile, useFetch } from '~/tools/http'
 import crypto from 'crypto'
 import { useWebsocket, useWebsocketClose } from '~/tools/websocket'
 import { useHttpServe, useHttpServeClose } from '~/tools/http'
 
 export const useHttp = (win: BrowserWindow) => {
     ipcMain.handle('fetch', async(_, req) => {
-        const { url, method, params, data, headers } = req
-        const res = await useRequest({ url, method, params, data, headers })
-        return {
-            data: res.data,
-            headers: res.headers,
-            status: res.status,
-            statusText: res.statusText
-        }
+        return useFetch(win, 'fetchFile', req)
     })
 
     ipcMain.handle('telnet', async(_, req) => {

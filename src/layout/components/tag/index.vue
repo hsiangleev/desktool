@@ -6,7 +6,7 @@
                 :key='tag.path'
                 ref='tagsRef'
                 class='m-1 cursor-pointer rounded-none'
-                :closable='tag.path !== epsPathRoot'
+                :closable='tag.path !== "/"'
                 :disable-transitions='false'
                 :effect='tag.isActive ? "dark" : "plain"'
                 @close='useStoreLayout.closeTag(tag.path)'

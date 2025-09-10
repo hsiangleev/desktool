@@ -8,7 +8,10 @@
     "electron:dev": "unbuild && cross-env NODE_ENV=development electron ./dist/server/main.cjs",
     "build:render": "vue-tsc -b && vite build",
     "build:server": "unbuild",
-    "build": "npm run build:server && npm run build:render && electron-builder"
+    "build": "npm run build:server && npm run build:render && electron-builder",
+    "lint": "stylelint **/*.{css,vue} --fix && eslint . --fix && vue-tsc -b",
+    "tsc": "vue-tsc --noEmit",
+    "test": "npm-run-all -p lint tsc --continue-on-error"
   },
   "main": "dist/server/main.cjs",
   "build": {
@@ -58,6 +61,7 @@
     "electron-builder": "^26.0.12",
     "eslint": "^9.32.0",
     "eslint-plugin-vue": "^10.4.0",
+    "form-data": "^4.0.4",
     "jsencrypt": "^3.5.4",
     "npm-run-all": "^4.1.5",
     "nprogress": "^0.2.0",

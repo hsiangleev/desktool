@@ -3,6 +3,7 @@ import http from 'http'
 import fs from 'fs'
 import axios from 'axios'
 import type { BrowserWindow } from 'electron'
+import FormData from 'form-data'
 import { loadConfigFile } from './tools'
 
 export const useRequest = axios.create({
@@ -106,5 +107,46 @@ export const updateGitlabFile = async(rootPath: string, project: string[], proje
         return { code: 0, msg }
     } catch (err: any) {
         return { code: -1, msg: `下载失败: ${err.toString()}` }
+    }
+}
+
+export const useFetch = async(win: BrowserWindow, channel: string, req: any) => {
+    try {
+        const { url, method, params, data, headers, file } = req
+        if(file.length === 0) {
+            const res = await useRequest({ url, method, params, data, headers })
+            return {
+                data: res.data,
+                status: res.status,
+                statusText: res.statusText
+            }
+        }
+        file.forEach(async(v: {name: string, buffer: any}) => {
+            const formData = new FormData()
+            const buffer = Buffer.isBuffer(v.buffer) ? v.buffer : Buffer.from(v.buffer)
+            formData.append('file', buffer, {
+                filename: v.name,
+                contentType: 'application/octet-stream'
+            })
+            Object.keys(data).forEach(v => formData.append(v, data[v]))
+            const res = await useRequest({ 
+                url, 
+                method, 
+                params, 
+                data: formData, 
+                headers: { ...headers, ...formData.getHeaders() },
+                maxContentLength: Infinity,
+                maxBodyLength: Infinity
+            })
+            win.webContents.send(channel, `“${v.name}”文件上传结束，返回结果如下：`)
+            win.webContents.send(channel, {
+                data: res.data,
+                status: res.status,
+                statusText: res.statusText
+            })
+        })
+        return []
+    } catch (error:any) {
+        return { data: error.toString() }
     }
 }

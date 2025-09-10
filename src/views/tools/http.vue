@@ -14,13 +14,24 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label='headers' prop='headers'>
-                    <EpsCodeJs v-model='ruleForm.headers' :line-numbers='false' height='70px' placeholder='请输入请求headers' />
+                    <EpsCodeJs v-model='ruleForm.headers' :line-numbers='false' height='60px' placeholder='请输入请求headers' />
                 </el-form-item>
                 <el-form-item label='params' prop='params'>
-                    <EpsCodeJs v-model='ruleForm.params' :line-numbers='false' height='70px' placeholder='请输入请求params' />
+                    <EpsCodeJs v-model='ruleForm.params' :line-numbers='false' height='60px' placeholder='请输入请求params' />
                 </el-form-item>
                 <el-form-item label='data' prop='data'>
-                    <EpsCodeJs v-model='ruleForm.data' :line-numbers='false' height='150px' placeholder='请输入请求data' />
+                    <EpsCodeJs v-model='ruleForm.data' :line-numbers='false' height='100px' placeholder='请输入请求data' />
+                </el-form-item>
+                <el-form-item label='选择文件' prop='file'>
+                    <el-upload
+                        v-model:file-list='fileList'
+                        class='w-full'
+                        drag
+                        :auto-upload='false'
+                        multiple
+                    >
+                        <div class='el-upload__text'>拖拽或点击上传</div>
+                    </el-upload>
                 </el-form-item>
                 <el-form-item>
                     <el-button type='primary' @click='submitForm(ruleFormRef)'>发送请求</el-button>
@@ -28,11 +39,11 @@
                 </el-form-item>
             </el-form>
         </div>
-        <div class='h-full w-1/2'><EpsCodeJs v-model='responseData' is-readonly class='res-log' /></div>
+        <div class='h-full w-1/2'><EpsCodeJs ref='codeRef' v-model='responseData' is-readonly class='res-log' /></div>
     </div>
 </template>
 <script setup lang='ts'>
-import type { FormInstance, FormRules } from 'element-plus'
+import type { FormInstance, FormRules, UploadFile } from 'element-plus'
 const responseData = ref('')
 interface IForm {
     url: string
@@ -64,7 +75,26 @@ const rules = reactive<FormRules<IForm>>({
     params: [{ validator: (_: any, value: any, callback: any) => callback(checkJson(value)), trigger: 'blur' }],
     data: [{ validator: (_: any, value: any, callback: any) => callback(checkJson(value)), trigger: 'blur' }]
 })
-
+const fileList = ref<UploadFile[]>([])
+const transformFile: () => Promise<{name: string, buffer: any}[]> = async() => {
+    if(fileList.value.length === 0) return []
+    const p = fileList.value.map(v => {
+        return new Promise(resolve => {
+            const reader = new FileReader()
+            reader.onload = () => {
+                const arrayBuffer = reader.result as any
+                const buffer = new Uint8Array(arrayBuffer)
+                resolve({ name: v.name, buffer })
+            }
+            reader.readAsArrayBuffer(v.raw!)
+        })
+    }) as any
+    return await Promise.all(p)
+}
+const codeRef = ref()
+window.electronAPI.on('fetchFile', (_, res) => {
+    codeRef.value?.appendText(typeof res === 'string' ? res : JSON.stringify(res, null, 4))
+})
 const submitForm = async(formEl: FormInstance | undefined) => {
     if(!await epsFormSubmit(formEl)) return
     const { close } = await epsLayerLoading()
@@ -81,15 +111,21 @@ const submitForm = async(formEl: FormInstance | undefined) => {
         headers = JSON.parse(ruleForm.headers || '{}')
     } catch {}
     responseData.value = ''
+
+    const file = await transformFile()
     const res = await window.electronAPI.invoke('fetch', {
         url: ruleForm.url,
         method: ruleForm.method,
         headers,
         params,
-        data
+        data,
+        file
     })
     close()
+    console.log(res)
     try {
+        // 返回数组则代表是文件上传
+        if(Array.isArray(res)) return
         if(res.status >= 400) {
             responseData.value = `状态码：${res.status}，状态信息：${res.statusText || res.data}`
         }else if(typeof res.data == 'string') {
@@ -105,5 +141,14 @@ const submitForm = async(formEl: FormInstance | undefined) => {
 const resetForm = (formEl: FormInstance | undefined) => {
     if (!formEl) return
     formEl.resetFields()
+    fileList.value = []
 }
 </script>
+
+<style scoped>
+:deep(.el-upload-dragger) {
+    --el-upload-dragger-padding-horizontal: 0px;
+
+    width: 100%;
+}
+</style>
