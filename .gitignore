@@ -25,4 +25,5 @@ dist-ssr
 *.sw?
 
 lib
+release
 types/*.d.ts

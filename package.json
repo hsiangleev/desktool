@@ -1,39 +1,24 @@
 {
   "name": "desktool",
   "private": true,
-  "version": "0.0.4",
+  "version": "0.0.5",
   "type": "module",
+  "author": {
+    "name": "hsianglee",
+    "url": "https://github.com/hsiangleev/desktool"
+  },
+  "description": "使用electron和vue3编写的桌面工具",
   "scripts": {
     "dev": "vite",
     "electron:dev": "unbuild && cross-env NODE_ENV=development electron ./dist/server/main.cjs",
-    "build:render": "vue-tsc -b && vite build",
+    "build:render": "vite build",
     "build:server": "unbuild",
-    "build": "npm run build:server && npm run build:render && electron-builder",
+    "build": "npm run build:server && npm run build:render && electron-builder -c electron-builder.config.mjs --win",
     "lint": "stylelint **/*.{css,vue} --fix && eslint . --fix && vue-tsc -b",
     "tsc": "vue-tsc --noEmit",
     "test": "npm-run-all -p lint tsc --continue-on-error"
   },
   "main": "dist/server/main.cjs",
-  "build": {
-    "appId": "com.example.desktool",
-    "productName": "desktool",
-    "directories": {
-      "output": "lib"
-    },
-    "files": [
-      "dist/renderer/**/*",
-      "dist/server/**/*",
-      "dist/shared/**/*",
-      "package.json"
-    ],
-    "win": {
-      "icon": "public/favicon.ico",
-      "target": [
-        "nsis",
-        "zip"
-      ]
-    }
-  },
   "dependencies": {
     "element-plus": "^2.11.1",
     "vue": "^3.5.18"
