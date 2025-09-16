@@ -1,9 +1,9 @@
 <template>
     <div class='h-full flex'>
         <div class='eps-card-flex h-full w-1/2' shadow='never'>
-            <el-form ref='ruleFormRef' :model='ruleForm' :rules='rules' label-width='80px'>
+            <el-form ref='ruleFormRef' :model='ruleForm' :rules='rules' label-width='80px' @submit.prevent>
                 <el-form-item label='请求地址' prop='url'>
-                    <el-input v-model='ruleForm.url' placeholder='请输入请求地址' />
+                    <el-input v-model='ruleForm.url' placeholder='请输入请求地址' @keyup.enter='submitForm(ruleFormRef)' />
                 </el-form-item>
                 <el-form-item label='请求类型' prop='method'>
                     <el-select v-model='ruleForm.method'>
@@ -14,13 +14,13 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label='headers' prop='headers'>
-                    <EpsCodeJs v-model='ruleForm.headers' :line-numbers='false' height='60px' placeholder='请输入请求headers' />
+                    <EpsCodeJs v-model='ruleForm.headers' :line-numbers='false' height='60px' placeholder='请输入请求headers' @keyup.enter='submitForm(ruleFormRef)' />
                 </el-form-item>
                 <el-form-item label='params' prop='params'>
-                    <EpsCodeJs v-model='ruleForm.params' :line-numbers='false' height='60px' placeholder='请输入请求params' />
+                    <EpsCodeJs v-model='ruleForm.params' :line-numbers='false' height='60px' placeholder='请输入请求params' @keyup.enter='submitForm(ruleFormRef)' />
                 </el-form-item>
                 <el-form-item label='data' prop='data'>
-                    <EpsCodeJs v-model='ruleForm.data' :line-numbers='false' height='100px' placeholder='请输入请求data' />
+                    <EpsCodeJs v-model='ruleForm.data' :line-numbers='false' height='100px' placeholder='请输入请求data' @keyup.enter='submitForm(ruleFormRef)' />
                 </el-form-item>
                 <el-form-item label='选择文件' prop='file'>
                     <el-upload

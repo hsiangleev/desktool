@@ -1,8 +1,8 @@
 <template>
     <div class='eps-card-flex h-full' shadow='never'>
-        <el-form ref='ruleFormRef' :model='form' label-width='100px' :rules='rules'>
+        <el-form ref='ruleFormRef' :model='form' label-width='100px' :rules='rules' @submit.prevent>
             <el-form-item prop='ip' label='连接地址'>
-                <el-input v-model='form.ip' placeholder='请输入连接地址' />
+                <el-input v-model='form.ip' placeholder='请输入连接地址' @keyup.enter='submitForm(ruleFormRef)' />
             </el-form-item>
             <el-form-item prop='isBase64' label='base64加密'>
                 <el-switch v-model='form.isBase64' />
@@ -22,7 +22,7 @@ import type { Arrayable } from 'element-plus/es/utils/typescript.mjs'
 const { getSession, setSession } = epsSession()
 class IForm {
     ip = ''
-    isBase64 = false
+    isBase64 = true
     isStart = false
 }
 const form = reactive(getSession<IForm>('websocket') ?? new IForm())
@@ -40,9 +40,13 @@ window.electronAPI.on('connectWebsocket', (_, res) => {
 const submitForm = async(formEl: FormInstance | undefined) => {
     if(!await epsFormSubmit(formEl)) return
     log.value = '开始连接中...'
-    await window.electronAPI.invoke('connectWebsocket', { ip: form.ip, isBase64: form.isBase64 })
-    form.isStart = true
-    setSession('websocket', form)
+    try {
+        await window.electronAPI.invoke('connectWebsocket', { ip: form.ip, isBase64: form.isBase64 })
+        form.isStart = true
+        setSession('websocket', form)
+    } catch (error) {
+        log.value = `${error}`
+    }
 }
 const close = async(ismsg = true) => {
     ismsg && codeRef.value?.appendText('停止连接中...')

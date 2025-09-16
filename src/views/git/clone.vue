@@ -1,12 +1,12 @@
 <template>
     <div class='h-full flex'>
         <div class='h-full w-1/2' shadow='never'>
-            <el-form ref='ruleFormRef' :model='form' :rules='rules' label-width='80px'>
+            <el-form ref='ruleFormRef' :model='form' :rules='rules' label-width='80px' @submit.prevent>
                 <el-form-item label='根目录' prop='rootPath'>
                     <EpsSelectDir v-model='form.rootPath' type='clone' @change='log=""' />
                 </el-form-item>
                 <el-form-item label='克隆项目' prop='url'>
-                    <el-input v-model='form.url' placeholder='请输入项目地址' />
+                    <el-input v-model='form.url' placeholder='请输入项目地址' @keyup.enter='cloneProject(ruleFormRef)' />
                 </el-form-item>
                 <el-form-item>
                     <el-button type='primary' :disabled='form.isStart' @click='cloneProject(ruleFormRef)'>克隆</el-button>

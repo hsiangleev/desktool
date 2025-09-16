@@ -1,6 +1,6 @@
 <template>
     <div class='min-h-full'>
-        <el-form ref='ruleFormRef' :model='form' label-width='100px'>
+        <el-form ref='ruleFormRef' :model='form' label-width='100px' @submit.prevent>
             <el-form-item label='生成guid' prop='guid'>
                 <el-input v-model='form.guid' readonly placeholder='guid'>
                     <template #append><div class='cursor-pointer' @click='genGuid'>生成</div></template>

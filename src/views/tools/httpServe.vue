@@ -1,6 +1,6 @@
 <template>
     <div class='eps-card-flex h-full' shadow='never'>
-        <el-form ref='ruleFormRef' :model='form' label-width='100px' :rules='rules'>
+        <el-form ref='ruleFormRef' :model='form' label-width='100px' :rules='rules' @submit.prevent>
             <el-form-item prop='baseDir' label='资源地址'>
                 <EpsSelectDir v-model='form.baseDir' />
             </el-form-item>
@@ -37,10 +37,14 @@ const codeRef = ref()
 window.electronAPI.on('connectHttpServe', (_, res) => codeRef.value?.appendText(res))
 const submitForm = async(formEl: FormInstance | undefined) => {
     if(!await epsFormSubmit(formEl)) return
-    log.value = '正在启动服务...'
-    await window.electronAPI.invoke('connectHttpServe', { baseDir: form.baseDir, port: form.port })
-    form.isStart = true
-    setSession('httpServe', form)
+    try {
+        log.value = '正在启动服务...'
+        await window.electronAPI.invoke('connectHttpServe', { baseDir: form.baseDir, port: form.port })
+        form.isStart = true
+        setSession('httpServe', form)
+    } catch (error) {
+        log.value = `${error}`
+    }
 }
 const close = async() => {
     codeRef.value?.appendText('服务停止中...')

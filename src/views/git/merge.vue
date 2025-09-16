@@ -1,7 +1,7 @@
 <template>
     <div class='h-full flex'>
         <div class='h-full w-1/2' shadow='never'>
-            <el-form ref='ruleFormRef' :model='form' :rules='rules' label-width='80px'>
+            <el-form ref='ruleFormRef' :model='form' :rules='rules' label-width='80px' @submit.prevent>
                 <el-form-item label='根目录' prop='rootPath'>
                     <EpsSelectDir v-model='form.rootPath' type='merge' @change='changeRootPath' />
                 </el-form-item>

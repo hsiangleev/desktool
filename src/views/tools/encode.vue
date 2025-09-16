@@ -1,6 +1,6 @@
 <template>
     <div class='min-h-full'>
-        <el-form ref='ruleFormRef' :model='form' label-width='60px'>
+        <el-form ref='ruleFormRef' :model='form' label-width='60px' @submit.prevent>
             <el-tabs model-value='base64'>
                 <el-tab-pane label='base64' name='base64'>
                     <el-form-item label='加密' prop='base64Encode'>

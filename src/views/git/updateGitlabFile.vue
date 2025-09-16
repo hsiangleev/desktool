@@ -1,6 +1,6 @@
 <template>
     <div class='min-h-full'>
-        <el-form ref='ruleFormRef' :model='form' :rules='rules' label-width='120px'>
+        <el-form ref='ruleFormRef' :model='form' :rules='rules' label-width='120px' @submit.prevent>
             <el-form-item label='根目录' prop='rootPath'>
                 <EpsSelectDir v-model='form.rootPath' type='updateGitlabFile' @change='changeRootPath' />
             </el-form-item>
@@ -8,13 +8,13 @@
                 <el-select v-model='form.project' :options='projectOptions' multiple placeholder='本地' clearable />
             </el-form-item>
             <el-form-item label='gitlab项目地址' prop='projectUrl'>
-                <el-input v-model='form.projectUrl' placeholder='请输入项目地址' />
+                <el-input v-model='form.projectUrl' placeholder='请输入项目地址' @keyup.enter='submitForm(ruleFormRef)' />
             </el-form-item>
             <el-form-item label='文件路径' prop='filePath'>
-                <el-input v-model='form.filePath' placeholder='请输入文件路径' />
+                <el-input v-model='form.filePath' placeholder='请输入文件路径' @keyup.enter='submitForm(ruleFormRef)' />
             </el-form-item>
             <el-form-item label='同步分支' prop='branch'>
-                <el-input v-model='form.branch' placeholder='请输入同步分支' />
+                <el-input v-model='form.branch' placeholder='请输入同步分支' @keyup.enter='submitForm(ruleFormRef)' />
             </el-form-item>
             <el-form-item>
                 <el-button type='primary' @click='submitForm(ruleFormRef)'>同步</el-button>
