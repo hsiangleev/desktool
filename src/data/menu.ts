@@ -19,6 +19,12 @@ const menu: IMenu[] = [
         meta: { icon: 'ant-design:tool-outlined', menuName: '工具', menuType: 1 },
         children: [
             {
+                id: '106',
+                path: '/tools/markdownEdit',
+                component: routerMenu['tools/markdownEdit'],
+                meta: { menuName: 'MD编辑器', menuType: 2 }
+            },
+            {
                 id: '101',
                 path: '/tools/http',
                 component: routerMenu['tools/http'],

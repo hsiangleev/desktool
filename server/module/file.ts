@@ -1,4 +1,5 @@
-import { BrowserWindow, ipcMain, dialog } from 'electron'
+import { BrowserWindow, ipcMain } from 'electron'
+import { openMdFile, saveMdFile, sellectDir } from '~/tools/file'
 import { gitClone, gitMerge, processStop } from '~/tools/git'
 import { updatePackage } from '~/tools/npm'
 import { loadConfigFile, useReaddir } from '~/tools/tools'
@@ -13,11 +14,15 @@ export const useFile = (win: BrowserWindow) => {
     })
 
     ipcMain.handle('sellectDir', async() => {
-        const result = await dialog.showOpenDialog(win, {
-            properties: ['openDirectory']
-        })
-        if (result.canceled) return null
-        return result.filePaths[0]
+        return sellectDir(win)
+    })
+    
+    ipcMain.handle('saveMdFile', async(_, res) => {
+        return saveMdFile(win, res)
+    })
+    
+    ipcMain.handle('openMdFile', async() => {
+        return openMdFile(win)
     })
 
     ipcMain.handle('gitMerge', async(_, res) => {
