@@ -1,4 +1,4 @@
-import { BrowserWindow, dialog } from 'electron'
+import { BrowserWindow, clipboard, dialog } from 'electron'
 import fs from 'fs'
 import path from 'path'
 import { spawnCommand } from './git'
@@ -48,10 +48,10 @@ export const sellectDir = async(win: BrowserWindow) => {
         const result = await dialog.showOpenDialog(win, {
             properties: ['openDirectory']
         })
-        if (result.canceled) return null
+        if (result.canceled) return ''
         return result.filePaths[0]
     } catch {
-        return null
+        return ''
     }
 }
 
@@ -62,10 +62,10 @@ export const selFileImg = async(win: BrowserWindow) => {
             filters: [{ name: 'Images', extensions: ['jpg', 'png', 'gif', 'jpeg', 'webp'] }],
             properties: ['openFile']
         })
-        if (result.canceled) return null
+        if (result.canceled) return ''
         return result.filePaths[0]
     } catch {
-        return null
+        return ''
     }
 }
 
@@ -86,6 +86,30 @@ export const copyFileImgTime = async(sourcePath: string, destDir: string) => {
         fs.copyFileSync(sourcePath, targetPath)
 
         return { code: 0, msg: `上传成功，文件已保存到“${targetPath}”`, data: newFileName }
+    } catch (error) {
+        return { code: -1, msg: `${error}` }
+    }
+}
+
+/** 剪贴板中保存图片 */
+export const saveImgByClipboard = async(destDir: string) => {
+    try {
+        // 从剪贴板读取图片
+        const image = clipboard.readImage()
+        if (!image.isEmpty()) {
+            // 转成 PNG Buffer
+            const pngBuffer = image.toPNG()
+            // 用时间戳或者格式化时间生成新文件名
+            const timestamp = new Date().toISOString()
+                .replace(/[-:.TZ]/g, '')  
+            const newFileName = `${timestamp}.png`
+            const filePath = path.join(destDir, newFileName)
+            // 写入文件
+            fs.writeFileSync(filePath, pngBuffer)
+            return { code: 0, msg: `图片已保存到: ${filePath}`, data: newFileName }
+        } else {
+            return { code: -1, msg: '剪贴板中没有图片' }
+        }
     } catch (error) {
         return { code: -1, msg: `${error}` }
     }

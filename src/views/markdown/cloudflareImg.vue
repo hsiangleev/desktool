@@ -14,8 +14,9 @@
                 <el-input v-model='form.domain' placeholder='请输入自定义域名' @keyup.enter='submitForm(ruleFormRef)' />
             </el-form-item>
             <el-form-item>
-                <el-button type='primary' :disabled='!form.imgPath' plain @click='uploadFile()'>上传图片</el-button>
-                <el-button type='primary' plain @click='submitForm(ruleFormRef)'>发布</el-button>
+                <el-button type='primary' plain title='发布到cloudflare' @click='submitForm(ruleFormRef)'>发布</el-button>
+                <el-button type='success' :disabled='!form.imgPath' plain title='从本地其他文件夹复制文件' @click='uploadFile()'>上传图片</el-button>
+                <el-button type='success' plain title='从剪贴板中保存图片' @click='saveImgByClipboard()'>剪贴板</el-button>
                 <el-button type='info' plain @click='dialogVisible=true'>使用说明</el-button>
             </el-form-item>
         </el-form>
@@ -69,18 +70,26 @@ const submitForm = async(formEl: FormInstance | undefined) => {
     log.value = ''
     const res = await window.electronAPI.invoke('cloudflareImg', { rootPath: form.rootPath, projectName: form.projectName })
     setLocal('cloudflareImg', form)
-    if(res.code === 0 && imgResUrl.value && form.domain) {
-        const url = `${form.domain.endsWith('/') ? form.domain : `${form.domain}/`}${imgResUrl.value}`
-        codeRef.value?.appendText(`上传图片预览地址: ${url}`)
-        codeRef.value?.appendText(`![](${url})`)
+    if(res.code === 0 && imgResUrl.value.length > 0 && form.domain) {
+        imgResUrl.value.forEach(v => {
+            const url = `${form.domain.endsWith('/') ? form.domain : `${form.domain}/`}${v}`
+            codeRef.value?.appendText(`上传图片预览地址: ${url}`)
+            codeRef.value?.appendText(`![](${url})`)
+        })
     }
 }
-const imgResUrl = ref('')
+const imgResUrl = ref<string[]>([])
 const uploadFile = async() => {
-    if(!form.imgPath) return
+    if(!form.imgPath || !form.rootPath) return
     const res = await window.electronAPI.invoke('copyFileImgTime', { sourcePath: form.imgPath, destDir: form.rootPath })
     log.value = res.msg
-    imgResUrl.value = res.data ?? ''
+    if(res.code === 0) imgResUrl.value.push(res.data)
+}
+const saveImgByClipboard = async() => {
+    if(!form.rootPath) return
+    const res = await window.electronAPI.invoke('saveImgByClipboard', form.rootPath)
+    log.value = res.msg
+    if(res.code === 0) imgResUrl.value.push(res.data)
 }
 </script>
 

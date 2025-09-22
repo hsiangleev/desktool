@@ -1,5 +1,5 @@
 import { BrowserWindow, ipcMain } from 'electron'
-import { selFileImg, openMdFile, saveMdFile, sellectDir, uploadCloudflareImg, copyFileImgTime } from '~/tools/file'
+import { selFileImg, openMdFile, saveMdFile, sellectDir, uploadCloudflareImg, copyFileImgTime, saveImgByClipboard } from '~/tools/file'
 import { gitClone, gitMerge, processStop } from '~/tools/git'
 import { updatePackage } from '~/tools/npm'
 import { loadConfigFile, useReaddir } from '~/tools/tools'
@@ -27,6 +27,10 @@ export const useFile = (win: BrowserWindow) => {
     
     ipcMain.handle('selFileImg', async() => {
         return selFileImg(win)
+    })
+    
+    ipcMain.handle('saveImgByClipboard', async(_, destDir) => {
+        return saveImgByClipboard(destDir)
     })
     
     ipcMain.handle('copyFileImgTime', async(_, res) => {
