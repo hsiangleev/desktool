@@ -19,18 +19,6 @@ const menu: IMenu[] = [
         meta: { icon: 'ant-design:tool-outlined', menuName: '工具', menuType: 1 },
         children: [
             {
-                id: '106',
-                path: '/tools/markdownEdit',
-                component: routerMenu['tools/markdownEdit'],
-                meta: { menuName: 'MD编辑器', menuType: 2 }
-            },
-            {
-                id: '107',
-                path: '/tools/cloudflareImg',
-                component: routerMenu['tools/cloudflareImg'],
-                meta: { menuName: 'cloudflare图床', menuType: 2 }
-            },
-            {
                 id: '101',
                 path: '/tools/http',
                 component: routerMenu['tools/http'],
@@ -63,6 +51,25 @@ const menu: IMenu[] = [
         ]
     },
     {
+        id: '501',
+        path: '/markdown',
+        meta: { icon: 'bi:markdown', menuName: 'markdown', menuType: 1 },
+        children: [
+            {
+                id: '502',
+                path: '/markdown/markdownEdit',
+                component: routerMenu['markdown/markdownEdit'],
+                meta: { menuName: 'MD编辑器', menuType: 2 }
+            },
+            {
+                id: '503',
+                path: '/markdown/cloudflareImg',
+                component: routerMenu['markdown/cloudflareImg'],
+                meta: { menuName: 'cloudflare图床', menuType: 2 }
+            }
+        ]
+    },
+    {
         id: '201',
         path: '/git',
         meta: { icon: 'bi:git', menuName: 'git操作', menuType: 1 },
@@ -81,22 +88,15 @@ const menu: IMenu[] = [
             },
             {
                 id: '204',
-                path: '/git/updateGitlabFile',
-                component: routerMenu['git/updateGitlabFile'],
-                meta: { menuName: '同步gitlab文件', menuType: 2 }
-            }
-        ]
-    },
-    {
-        id: '301',
-        path: '/npm',
-        meta: { icon: 'ant-design:node-index-outlined', menuName: 'npm操作', menuType: 1 },
-        children: [
-            {
-                id: '302',
                 path: '/npm/updatePackage',
                 component: routerMenu['npm/updatePackage'],
                 meta: { menuName: '更新软件包', menuType: 2 }
+            },
+            {
+                id: '205',
+                path: '/git/updateGitlabFile',
+                component: routerMenu['git/updateGitlabFile'],
+                meta: { menuName: '同步gitlab文件', menuType: 2 }
             }
         ]
     },
