@@ -1,5 +1,5 @@
 import { BrowserWindow, ipcMain } from 'electron'
-import { openMdFile, saveMdFile, sellectDir } from '~/tools/file'
+import { selFileImg, openMdFile, saveMdFile, sellectDir, uploadCloudflareImg, copyFileImgTime } from '~/tools/file'
 import { gitClone, gitMerge, processStop } from '~/tools/git'
 import { updatePackage } from '~/tools/npm'
 import { loadConfigFile, useReaddir } from '~/tools/tools'
@@ -24,6 +24,15 @@ export const useFile = (win: BrowserWindow) => {
     ipcMain.handle('openMdFile', async() => {
         return openMdFile(win)
     })
+    
+    ipcMain.handle('selFileImg', async() => {
+        return selFileImg(win)
+    })
+    
+    ipcMain.handle('copyFileImgTime', async(_, res) => {
+        const { sourcePath, destDir } = res
+        return copyFileImgTime(sourcePath, destDir)
+    })
 
     ipcMain.handle('gitMerge', async(_, res) => {
         const { dirList, origin, target } = res
@@ -42,5 +51,10 @@ export const useFile = (win: BrowserWindow) => {
     ipcMain.handle('updatePackage', async(_, res) => {
         const { dirList, packages, branch } = res
         return await updatePackage(win, dirList, packages, branch)
+    })
+    
+    ipcMain.handle('cloudflareImg', async(_, res) => {
+        const { rootPath, projectName } = res
+        return await uploadCloudflareImg(win, rootPath, projectName)
     })
 }

@@ -1,20 +1,27 @@
 <template>
-    <el-input v-model='dir' readonly placeholder='请选择文件夹'>
-        <template #append><div class='cursor-pointer' @click='sellectDir'>选择文件夹</div></template>
+    <el-input v-model='dir' readonly :placeholder='`${props.placeholder}`'>
+        <template #append><div class='cursor-pointer' @click='sellectDir'>{{ text }}</div></template>
     </el-input>
 </template>
 <script setup lang='ts'>
 interface IProps {
     type?: string
+    placeholder?: string
+    channel?: string
+    text?: string
 }
-const props = defineProps<IProps>()
+const props = withDefaults(defineProps<IProps>(), {
+    placeholder: '请选择文件夹',
+    channel: 'sellectDir',
+    text: '选择文件夹'
+})
 const { getLocal, setLocal } = epsLocal()
 const rootPath = reactive(getLocal<IObject>('rootPath') ?? {})
 
 const dir = defineModel<string>({ required: true })
 const emit = defineEmits(['change'])
 const sellectDir = async() => {
-    dir.value = await window.electronAPI.invoke('sellectDir')
+    dir.value = await window.electronAPI.invoke(props.channel)
     emit('change', dir.value)
     if(!props.type) return
     await epsSleep(0)

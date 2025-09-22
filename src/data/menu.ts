@@ -25,6 +25,12 @@ const menu: IMenu[] = [
                 meta: { menuName: 'MD编辑器', menuType: 2 }
             },
             {
+                id: '107',
+                path: '/tools/cloudflareImg',
+                component: routerMenu['tools/cloudflareImg'],
+                meta: { menuName: 'cloudflare图床', menuType: 2 }
+            },
+            {
                 id: '101',
                 path: '/tools/http',
                 component: routerMenu['tools/http'],
