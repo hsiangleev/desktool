@@ -7,6 +7,9 @@
             <el-form-item label='上传图片' prop='imgPath'>
                 <EpsSelectDir v-model='form.imgPath' channel='selFileImg' placeholder='请选择一个本地图片' text='选择图片' />
             </el-form-item>
+            <el-form-item prop='prefix' label='图片前缀名'>
+                <el-input v-model='form.prefix' placeholder='请输入保存的图片前缀名称' />
+            </el-form-item>
             <el-form-item prop='projectName' label='项目名称'>
                 <el-input v-model='form.projectName' placeholder='请输入cloudflare pages的项目名称' @keyup.enter='submitForm(ruleFormRef)' />
             </el-form-item>
@@ -51,6 +54,7 @@ class IForm {
     imgPath = ''
     projectName = ''
     domain = ''
+    prefix = ''
 }
 const form = reactive(getLocal<IForm>('cloudflareImg') ?? new IForm())
 const log = ref('')
@@ -81,13 +85,13 @@ const submitForm = async(formEl: FormInstance | undefined) => {
 const imgResUrl = ref<string[]>([])
 const uploadFile = async() => {
     if(!form.imgPath || !form.rootPath) return
-    const res = await window.electronAPI.invoke('copyFileImgTime', { sourcePath: form.imgPath, destDir: form.rootPath })
+    const res = await window.electronAPI.invoke('copyFileImgTime', { sourcePath: form.imgPath, destDir: form.rootPath, prefix: form.prefix })
     log.value = res.msg
     if(res.code === 0) imgResUrl.value.push(res.data)
 }
 const saveImgByClipboard = async() => {
     if(!form.rootPath) return
-    const res = await window.electronAPI.invoke('saveImgByClipboard', form.rootPath)
+    const res = await window.electronAPI.invoke('saveImgByClipboard', { destDir: form.rootPath, prefix: form.prefix })
     log.value = res.msg
     if(res.code === 0) imgResUrl.value.push(res.data)
 }
@@ -95,7 +99,7 @@ const saveImgByClipboard = async() => {
 
 <style scoped>
 .content-log {
-    height: calc(100% - 300px);
+    height: calc(100% - 350px);
 }
 
 .custom-block.tip {

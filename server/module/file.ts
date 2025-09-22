@@ -29,13 +29,14 @@ export const useFile = (win: BrowserWindow) => {
         return selFileImg(win)
     })
     
-    ipcMain.handle('saveImgByClipboard', async(_, destDir) => {
-        return saveImgByClipboard(destDir)
+    ipcMain.handle('saveImgByClipboard', async(_, res) => {
+        const { prefix, destDir } = res
+        return saveImgByClipboard(destDir, prefix)
     })
     
     ipcMain.handle('copyFileImgTime', async(_, res) => {
-        const { sourcePath, destDir } = res
-        return copyFileImgTime(sourcePath, destDir)
+        const { sourcePath, destDir, prefix } = res
+        return copyFileImgTime(sourcePath, destDir, prefix)
     })
 
     ipcMain.handle('gitMerge', async(_, res) => {

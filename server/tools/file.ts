@@ -69,14 +69,14 @@ export const selFileImg = async(win: BrowserWindow) => {
     }
 }
 
-export const copyFileImgTime = async(sourcePath: string, destDir: string) => {
+export const copyFileImgTime = async(sourcePath: string, destDir: string, prefix: string) => {
     try {
         const ext = path.extname(sourcePath)
         // 用时间戳或者格式化时间生成新文件名
         const timestamp = new Date().toISOString()
             .replace(/[-:.TZ]/g, '')  
         // => 类似 "20250920T162345"
-        const newFileName = `${timestamp}${ext}`
+        const newFileName = `${prefix}${timestamp}${ext}`
 
         const targetPath = path.join(destDir, newFileName)
 
@@ -92,7 +92,7 @@ export const copyFileImgTime = async(sourcePath: string, destDir: string) => {
 }
 
 /** 剪贴板中保存图片 */
-export const saveImgByClipboard = async(destDir: string) => {
+export const saveImgByClipboard = async(destDir: string, prefix: string) => {
     try {
         // 从剪贴板读取图片
         const image = clipboard.readImage()
@@ -102,7 +102,7 @@ export const saveImgByClipboard = async(destDir: string) => {
             // 用时间戳或者格式化时间生成新文件名
             const timestamp = new Date().toISOString()
                 .replace(/[-:.TZ]/g, '')  
-            const newFileName = `${timestamp}.png`
+            const newFileName = `${prefix}${timestamp}.png`
             const filePath = path.join(destDir, newFileName)
             // 写入文件
             fs.writeFileSync(filePath, pngBuffer)
