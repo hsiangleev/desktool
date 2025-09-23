@@ -8,7 +8,7 @@
                 <EpsSelectDir v-model='form.imgPath' channel='selFileImg' placeholder='请选择一个本地图片' text='选择图片' />
             </el-form-item>
             <el-form-item prop='prefix' label='图片前缀名'>
-                <el-input v-model='form.prefix' placeholder='请输入保存的图片前缀名称' />
+                <el-input v-model='form.prefix' placeholder='请输入保存的图片前缀名称' @keyup.enter='submitForm(ruleFormRef)' />
             </el-form-item>
             <el-form-item prop='projectName' label='项目名称'>
                 <el-input v-model='form.projectName' placeholder='请输入cloudflare pages的项目名称' @keyup.enter='submitForm(ruleFormRef)' />
