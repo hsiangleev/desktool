@@ -139,6 +139,19 @@ const menu: IMenu[] = [
                 meta: { menuName: '同步gitlab文件', menuType: 2 }
             }
         ]
+    },
+    {
+        id: `${++index}`,
+        path: '/windows',
+        meta: { icon: 'ant-design:windows-filled', menuName: 'windows工具', menuType: 1 },
+        children: [
+            {
+                id: `${++index}`,
+                path: '/windows/portAgent',
+                component: routerMenu['windows/portAgent'],
+                meta: { menuName: '端口代理', menuType: 2 }
+            }
+        ]
     }
 ]
 

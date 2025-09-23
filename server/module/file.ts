@@ -1,5 +1,5 @@
 import { BrowserWindow, ipcMain } from 'electron'
-import { selFileImg, openMdFile, saveMdFile, sellectDir, uploadCloudflareImg, copyFileImgTime, saveImgByClipboard } from '~/tools/file'
+import { selFileImg, openMdFile, saveMdFile, sellectDir, uploadCloudflareImg, copyFileImgTime, saveImgByClipboard, portAgentList, portAgentAdd, portAgentDel } from '~/tools/file'
 import { gitClone, gitMerge, processStop } from '~/tools/git'
 import { updatePackage } from '~/tools/npm'
 import { loadConfigFile, useReaddir } from '~/tools/tools'
@@ -61,5 +61,19 @@ export const useFile = (win: BrowserWindow) => {
     ipcMain.handle('cloudflareImg', async(_, res) => {
         const { rootPath, projectName } = res
         return await uploadCloudflareImg(win, rootPath, projectName)
+    })
+    
+    ipcMain.handle('portAgentList', async() => {
+        return await portAgentList(win)
+    })
+    
+    ipcMain.handle('portAgentAdd', async(_, res) => {
+        const { listenport, connectaddress, connectport } = res
+        return await portAgentAdd(win, listenport, connectaddress, connectport)
+    })
+    
+    ipcMain.handle('portAgentDel', async(_, res) => {
+        const { listenport } = res
+        return await portAgentDel(win, listenport)
     })
 }

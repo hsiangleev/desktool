@@ -15,6 +15,6 @@ fetch('https://v1.hitokoto.cn/')
     .el-empty__image{
         margin: 50px 0 10px;
         font-size: 100px;
-        opacity: 0.2;
+        opacity: 0.3;
     }
 </style>

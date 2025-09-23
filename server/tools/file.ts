@@ -123,3 +123,30 @@ export const uploadCloudflareImg = async(win: BrowserWindow, rootPath: string, p
         return { code: -1, msg: `${error}` }
     }
 }
+
+export const portAgentList = async(win: BrowserWindow) => {
+    try {
+        await spawnCommand(win, 'portAgentList', 'netsh', ['interface', 'portproxy', 'show', 'v4tov4'])
+        return { code: 0, msg: '查询成功' }
+    } catch (error) {
+        return { code: -1, msg: `${error}` }
+    }
+}
+
+export const portAgentAdd = async(win: BrowserWindow, listenport: number, connectaddress: string, connectport: number) => {
+    try {
+        await spawnCommand(win, 'portAgentAdd', 'netsh', ['interface', 'portproxy', 'add', 'v4tov4', 'listenaddress=0.0.0.0', `listenport=${listenport}`, `connectaddress=${connectaddress}`, `connectport=${connectport}`])
+        return { code: 0, msg: '添加成功' }
+    } catch (error) {
+        return { code: -1, msg: `${error}` }
+    }
+}
+
+export const portAgentDel = async(win: BrowserWindow, listenport: number) => {
+    try {
+        await spawnCommand(win, 'portAgentDel', 'netsh', ['interface', 'portproxy', 'delete', 'v4tov4', 'listenaddress=0.0.0.0', `listenport=${listenport}`])
+        return { code: 0, msg: '删除成功' }
+    } catch (error) {
+        return { code: -1, msg: `${error}` }
+    }
+}
