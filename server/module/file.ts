@@ -68,12 +68,12 @@ export const useFile = (win: BrowserWindow) => {
     })
     
     ipcMain.handle('portAgentAdd', async(_, res) => {
-        const { listenport, connectaddress, connectport } = res
-        return await portAgentAdd(win, listenport, connectaddress, connectport)
+        const { listenaddress, listenport, connectaddress, connectport } = res
+        return await portAgentAdd(win, listenaddress, listenport, connectaddress, connectport)
     })
     
     ipcMain.handle('portAgentDel', async(_, res) => {
-        const { listenport } = res
-        return await portAgentDel(win, listenport)
+        const { listenaddress, listenport } = res
+        return await portAgentDel(win, listenaddress, listenport)
     })
 }

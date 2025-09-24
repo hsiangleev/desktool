@@ -9,10 +9,11 @@
             <el-table-column type='selection' width='55' />
             <el-table-column prop='listenaddress' label='本地地址' />
             <el-table-column prop='listenport' label='本地端口' />
-            <el-table-column prop='connectaddress' label='连接地址' />
-            <el-table-column prop='connectport' label='连接端口' />
+            <el-table-column prop='connectaddress' label='目标地址' />
+            <el-table-column prop='connectport' label='目标端口' />
             <el-table-column fixed='right' label='操作'>
                 <template #default='scope'>
+                    <el-button link type='primary' size='small' @click='portAgentReset(scope.row)'>重设</el-button>
                     <el-button link type='danger' size='small' @click='portAgentDel([scope.row])'>删除</el-button>
                 </template>
             </el-table-column>
@@ -29,14 +30,17 @@
             :close-on-click-modal='false'
         >
             <el-form ref='ruleFormRef' :model='form' label-width='80px' :rules='rules' @submit.prevent>
+                <el-form-item prop='listenaddress' label='本地地址'>
+                    <el-input v-model='form.listenaddress' placeholder='请输入本地地址' />
+                </el-form-item>
                 <el-form-item prop='listenport' label='本地端口'>
                     <el-input-number v-model='form.listenport' placeholder='请输入本地端口' class='w-full text-left' :min='0' :max='65535' :controls='false' />
                 </el-form-item>
-                <el-form-item prop='connectaddress' label='连接地址'>
-                    <el-input v-model='form.connectaddress' placeholder='请输入连接地址' />
+                <el-form-item prop='connectaddress' label='目标地址'>
+                    <el-input v-model='form.connectaddress' placeholder='请输入目标地址' />
                 </el-form-item>
-                <el-form-item prop='connectport' label='连接端口'>
-                    <el-input-number v-model='form.connectport' placeholder='请输入连接端口' class='w-full' :min='0' :max='65535' :controls='false' />
+                <el-form-item prop='connectport' label='目标端口'>
+                    <el-input-number v-model='form.connectport' placeholder='请输入目标端口' class='w-full' :min='0' :max='65535' :controls='false' />
                 </el-form-item>
             </el-form>
             <template #footer>
@@ -54,7 +58,7 @@ import type { Arrayable } from 'element-plus/es/utils/typescript.mjs'
 
 
 class IPortAgent {
-    listenaddress = ''
+    listenaddress = '0.0.0.0'
     listenport?: number
     connectaddress = ''
     connectport?: number
@@ -83,12 +87,12 @@ window.electronAPI.on('portAgentList', (_, res: string) => {
 })
 
 window.electronAPI.on('portAgentDel', (_, res: string) => codeRef.value?.appendText(res))
+const del = async(row: IPortAgent) => await window.electronAPI.invoke('portAgentDel', { listenaddress: row.listenaddress, listenport: row.listenport })
 const portAgentDel = async(row: IPortAgent[]) => {
-    const f = async(row: IPortAgent) => await window.electronAPI.invoke('portAgentDel', { listenport: row.listenport })
     try {
         await epsLayerConfirm('确定是否删除？', 'warning')
         log.value = ''
-        const s = row.map(v => new Promise(resolve => f(v).then(() => resolve({}))))
+        const s = row.map(v => new Promise(resolve => del(v).then(() => resolve({}))))
         await Promise.all(s)
         await getPortAgentList()
     } catch {}
@@ -98,13 +102,21 @@ const portAgentMultDel = async() => {
     if(sels.length === 0) return epsLayerMsg('当前尚未选择数据', 'warning')
     await portAgentDel(sels)
 }
+const portAgentReset = async(row: IPortAgent) => {
+    log.value = ''
+    await del(row)
+    const { listenaddress, listenport, connectaddress, connectport } = row
+    await window.electronAPI.invoke('portAgentAdd', { listenaddress, listenport, connectaddress, connectport })
+    await getPortAgentList()
+}
 
 const form = ref(new IPortAgent())
 const ruleFormRef = ref()
 const rules = ref<Partial<Record<string, Arrayable<FormItemRule>>>>({
+    listenaddress: { required: true, message: '本地地址不能为空' },
     listenport: { required: true, message: '本地端口不能为空' },
-    connectaddress: { required: true, message: '连接地址不能为空' },
-    connectport: { required: true, message: '连接端口不能为空' }
+    connectaddress: { required: true, message: '目标地址不能为空' },
+    connectport: { required: true, message: '目标端口不能为空' }
 })
 const add = () => {
     form.value = new IPortAgent()
@@ -118,8 +130,8 @@ window.electronAPI.on('portAgentAdd', (_, res: string) => codeRef.value?.appendT
 const submitForm = async(formEl: FormInstance | undefined) => {
     if(!await epsFormSubmit(formEl)) return
     log.value = ''
-    const { listenport, connectaddress, connectport } = form.value
-    await window.electronAPI.invoke('portAgentAdd', { listenport, connectaddress, connectport })
+    const { listenaddress, listenport, connectaddress, connectport } = form.value
+    await window.electronAPI.invoke('portAgentAdd', { listenaddress, listenport, connectaddress, connectport })
     await getPortAgentList()
     dialogVisible.value = false
 }

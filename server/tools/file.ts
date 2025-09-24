@@ -133,18 +133,18 @@ export const portAgentList = async(win: BrowserWindow) => {
     }
 }
 
-export const portAgentAdd = async(win: BrowserWindow, listenport: number, connectaddress: string, connectport: number) => {
+export const portAgentAdd = async(win: BrowserWindow, listenaddress: string, listenport: number, connectaddress: string, connectport: number) => {
     try {
-        await spawnCommand(win, 'portAgentAdd', 'netsh', ['interface', 'portproxy', 'add', 'v4tov4', 'listenaddress=0.0.0.0', `listenport=${listenport}`, `connectaddress=${connectaddress}`, `connectport=${connectport}`])
+        await spawnCommand(win, 'portAgentAdd', 'netsh', ['interface', 'portproxy', 'add', 'v4tov4', `listenaddress=${listenaddress}`, `listenport=${listenport}`, `connectaddress=${connectaddress}`, `connectport=${connectport}`])
         return { code: 0, msg: '添加成功' }
     } catch (error) {
         return { code: -1, msg: `${error}` }
     }
 }
 
-export const portAgentDel = async(win: BrowserWindow, listenport: number) => {
+export const portAgentDel = async(win: BrowserWindow, listenaddress: string, listenport: number) => {
     try {
-        await spawnCommand(win, 'portAgentDel', 'netsh', ['interface', 'portproxy', 'delete', 'v4tov4', 'listenaddress=0.0.0.0', `listenport=${listenport}`])
+        await spawnCommand(win, 'portAgentDel', 'netsh', ['interface', 'portproxy', 'delete', 'v4tov4', `listenaddress=${listenaddress}`, `listenport=${listenport}`])
         return { code: 0, msg: '删除成功' }
     } catch (error) {
         return { code: -1, msg: `${error}` }
