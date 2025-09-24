@@ -1,5 +1,6 @@
 <template>
     <MdEditor
+        v-if='isShow'
         v-model='text'
         class='markdown-edit'
         :toolbars='toolbars' 
@@ -23,19 +24,27 @@ import { MdEditor, config } from 'md-editor-v3'
 import { ExportPDF, Emoji } from '@vavt/v3-extension'
 import 'md-editor-v3/lib/style.css'
 import '@vavt/v3-extension/lib/asset/style.css'
+ 
+const isShow = ref(false)
+onMounted(async() => {
+    const prefix = import.meta.env.DEV
+        ? '/plugin/md-editor-v3'
+        : await window.electronAPI.invoke('getRootPath', 'plugin/md-editor-v3')
 
-config({
-    editorExtensions: {
-        screenfull: { js: '/plugin/md-editor-v3/screenfull.js' },
-        highlight: { js: '/plugin/md-editor-v3/highlight.min.js', css: { atom: { dark: '/plugin/md-editor-v3/atom-one-dark.min.css' } } },
-        katex: { js: '/plugin/md-editor-v3/katex.min.js', css: '/plugin/md-editor-v3/katex.min.css' },
-        mermaid: { js: '/plugin/md-editor-v3/mermaid.min.js' },
-        echarts: { js: '/plugin/md-editor-v3/echarts.min.js' },
-        prettier: {
-            standaloneJs: '/plugin/md-editor-v3/standalone.js',
-            parserMarkdownJs: '/plugin/md-editor-v3/markdown.js'
+    config({
+        editorExtensions: {
+            screenfull: { js: `${prefix}/screenfull.js` },
+            highlight: { js: `${prefix}/highlight.min.js`, css: { atom: { dark: `${prefix}/atom-one-dark.min.css` } } },
+            katex: { js: `${prefix}/katex.min.js`, css: `${prefix}/katex.min.css` },
+            mermaid: { js: `${prefix}/mermaid.min.js` },
+            echarts: { js: `${prefix}/echarts.min.js` },
+            prettier: {
+                standaloneJs: `${prefix}/standalone.js`,
+                parserMarkdownJs: `${prefix}/markdown.js`
+            }
         }
-    }
+    })
+    isShow.value = true
 })
 
 const openMdFile = async() => {

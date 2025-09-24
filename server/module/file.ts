@@ -3,6 +3,8 @@ import { selFileImg, openMdFile, saveMdFile, sellectDir, uploadCloudflareImg, co
 import { gitClone, gitMerge, processStop } from '~/tools/git'
 import { updatePackage } from '~/tools/npm'
 import { loadConfigFile, useReaddir } from '~/tools/tools'
+import { pathToFileURL, fileURLToPath } from 'url'
+import path from 'path'
 
 export const useFile = (win: BrowserWindow) => {
     ipcMain.handle('readdir', async(_, dir) => {
@@ -75,5 +77,11 @@ export const useFile = (win: BrowserWindow) => {
     ipcMain.handle('portAgentDel', async(_, res) => {
         const { listenaddress, listenport } = res
         return await portAgentDel(win, listenaddress, listenport)
+    })
+
+    ipcMain.handle('getRootPath', async(_, href) => {
+        const __dirname = path.dirname(fileURLToPath(import.meta.url))
+        const pluginPath = path.join(__dirname, `../renderer/${href}`)
+        return pathToFileURL(pluginPath).href
     })
 }
