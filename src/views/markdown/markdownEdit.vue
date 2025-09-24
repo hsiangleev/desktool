@@ -19,10 +19,24 @@
 </template>
 
 <script setup>
-import { MdEditor } from 'md-editor-v3'
+import { MdEditor, config } from 'md-editor-v3'
 import { ExportPDF, Emoji } from '@vavt/v3-extension'
 import 'md-editor-v3/lib/style.css'
 import '@vavt/v3-extension/lib/asset/style.css'
+
+config({
+    editorExtensions: {
+        screenfull: { js: '/plugin/md-editor-v3/screenfull.js' },
+        highlight: { js: '/plugin/md-editor-v3/highlight.min.js', css: { atom: { dark: '/plugin/md-editor-v3/atom-one-dark.min.css' } } },
+        katex: { js: '/plugin/md-editor-v3/katex.min.js', css: '/plugin/md-editor-v3/katex.min.css' },
+        mermaid: { js: '/plugin/md-editor-v3/mermaid.min.js' },
+        echarts: { js: '/plugin/md-editor-v3/echarts.min.js' },
+        prettier: {
+            standaloneJs: '/plugin/md-editor-v3/standalone.js',
+            parserMarkdownJs: '/plugin/md-editor-v3/markdown.js'
+        }
+    }
+})
 
 const openMdFile = async() => {
     const { close } = epsLayerLoading('打开中...')

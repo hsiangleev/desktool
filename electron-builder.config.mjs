@@ -18,5 +18,8 @@ export default {
         provider: 'github',
         owner: 'hsiangleev',
         repo: 'desktool'
-    }
+    },
+    electronLanguages: [
+        'zh-CN'
+    ]
 }
