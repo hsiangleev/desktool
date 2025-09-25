@@ -150,6 +150,12 @@ const menu: IMenu[] = [
                 path: '/windows/portAgent',
                 component: routerMenu['windows/portAgent'],
                 meta: { menuName: '端口代理', menuType: 2 }
+            },
+            {
+                id: `${++index}`,
+                path: '/windows/serverManager',
+                component: routerMenu['windows/serverManager'],
+                meta: { menuName: '常用服务管理', menuType: 2 }
             }
         ]
     }

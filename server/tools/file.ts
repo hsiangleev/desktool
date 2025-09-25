@@ -150,3 +150,30 @@ export const portAgentDel = async(win: BrowserWindow, listenaddress: string, lis
         return { code: -1, msg: `${error}` }
     }
 }
+
+export const getServerName = async(win: BrowserWindow, serverName: string) => {
+    try {
+        await spawnCommand(win, 'getServerName', 'sc', ['query', serverName])
+        return { code: 0, msg: '获取成功' }
+    } catch (error) {
+        return { code: -1, msg: `${error}` }
+    }
+}
+
+export const startServerName = async(win: BrowserWindow, serverName: string) => {
+    try {
+        await spawnCommand(win, 'getServerName', 'sc', ['start', serverName])
+        return { code: 0, msg: '启动成功' }
+    } catch (error) {
+        return { code: -1, msg: `${error}` }
+    }
+}
+
+export const stopServerName = async(win: BrowserWindow, serverName: string) => {
+    try {
+        await spawnCommand(win, 'getServerName', 'sc', ['stop', serverName])
+        return { code: 0, msg: '停止成功' }
+    } catch (error) {
+        return { code: -1, msg: `${error}` }
+    }
+}

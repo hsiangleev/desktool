@@ -1,5 +1,5 @@
 import { BrowserWindow, ipcMain } from 'electron'
-import { selFileImg, openMdFile, saveMdFile, sellectDir, uploadCloudflareImg, copyFileImgTime, saveImgByClipboard, portAgentList, portAgentAdd, portAgentDel } from '~/tools/file'
+import { selFileImg, openMdFile, saveMdFile, sellectDir, uploadCloudflareImg, copyFileImgTime, saveImgByClipboard, portAgentList, portAgentAdd, portAgentDel, getServerName, startServerName, stopServerName } from '~/tools/file'
 import { gitClone, gitMerge, processStop } from '~/tools/git'
 import { updatePackage } from '~/tools/npm'
 import { loadConfigFile, useReaddir } from '~/tools/tools'
@@ -83,5 +83,17 @@ export const useFile = (win: BrowserWindow) => {
         const __dirname = path.dirname(fileURLToPath(import.meta.url))
         const pluginPath = path.join(__dirname, `../renderer/${href}`)
         return pathToFileURL(pluginPath).href
+    })
+
+    ipcMain.handle('getServerName', async(_, serverName) => {
+        return getServerName(win, serverName)
+    })
+
+    ipcMain.handle('startServerName', async(_, serverName) => {
+        return startServerName(win, serverName)
+    })
+
+    ipcMain.handle('stopServerName', async(_, serverName) => {
+        return stopServerName(win, serverName)
     })
 }
