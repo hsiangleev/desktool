@@ -8,7 +8,7 @@
         />
         <el-container>
             <el-aside
-                class='layout-aside'
+                class='layout-aside layout-drag'
                 :class='{
                     "w-42": menuStatus === IMenuStatus.PCE || menuStatus === IMenuStatus.PHE,
                     "w-0": menuStatus === IMenuStatus.PHN, 
@@ -18,13 +18,13 @@
                 }'
             >
                 <el-container class='h-screen'>
-                    <el-header class='layout-logo h-12'><LayoutLogo /></el-header>
+                    <el-header class='layout-logo layout-nodrag h-12'><LayoutLogo /></el-header>
                     <el-main class='layout-menu overflow-x-hidden p-0'><LayoutMenu /></el-main>
                     <el-footer class='layout-info h-10'><LayoutInfo /></el-footer>
                 </el-container>
             </el-aside>
             <el-container class='h-screen'>
-                <el-header class='layout-header h-12 px-3'><LayoutHeader /></el-header>
+                <el-header class='layout-header layout-drag h-12 px-3'><LayoutHeader /></el-header>
                 <el-header class='layout-tags h-8 flex items-center px-2'><LayoutTag /></el-header>
                 <el-main class='layout-content'>
                     <LayoutContent />
@@ -64,7 +64,6 @@ const isMenuStatusPhone = computed(() => menuStatus.value === IMenuStatus.PHE ||
 
 .layout-header {
     border-bottom: 1px solid var(--el-border-color);
-    -webkit-app-region: drag; /* 可拖动区域 */
     user-select: none;
 }
 

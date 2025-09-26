@@ -95,3 +95,11 @@ a {
 .res-log{
     height: calc(100% - 5px) !important;
 }
+
+.layout-drag {
+    -webkit-app-region: drag; /* 可拖动区域 */
+}
+
+.layout-nodrag {
+    -webkit-app-region: no-drag; /* 按钮不可拖动 */
+}

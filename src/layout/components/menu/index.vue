@@ -2,7 +2,7 @@
     <el-scrollbar class='h-full'>
         <el-menu
             :default-active='activeMenu'
-            class='layout-menu-content'
+            class='layout-menu-content layout-nodrag'
             :collapse='useStoreLayout.isCollapsed'
             :collapse-transition='false'
             :unique-opened='true'
