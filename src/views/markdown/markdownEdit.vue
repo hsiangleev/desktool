@@ -50,9 +50,9 @@ onMounted(async() => {
 const openMdFile = async() => {
     const { close } = epsLayerLoading('打开中...')
     const res = await window.electronAPI.invoke('openMdFile')
+    close()
     if(res.code !== 0) return epsLayerMsg(res.msg, 'warning')
     text.value = res.data
-    close()
 }
 const onSave = async() => {
     const { close } = epsLayerLoading('保存中...')
