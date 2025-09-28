@@ -35,7 +35,7 @@
     "@types/qs": "^6.14.0",
     "@types/ws": "^8.18.1",
     "@unocss/eslint-config": "^66.4.1",
-    "@vavt/v3-extension": "^3.0.0",
+    "@vavt/v3-extension": "^4.0.0",
     "@vitejs/plugin-vue": "^6.0.1",
     "@vue/tsconfig": "^0.7.0",
     "axios": "^1.11.0",

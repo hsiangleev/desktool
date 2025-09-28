@@ -18,7 +18,7 @@
                 }'
             >
                 <el-container class='h-screen'>
-                    <el-header class='layout-logo layout-nodrag h-12'><LayoutLogo /></el-header>
+                    <el-header class='layout-logo h-12'><LayoutLogo /></el-header>
                     <el-main class='layout-menu overflow-x-hidden p-0'><LayoutMenu /></el-main>
                     <el-footer class='layout-info h-10'><LayoutInfo /></el-footer>
                 </el-container>
