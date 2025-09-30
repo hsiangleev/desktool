@@ -12,8 +12,8 @@ export const useModule = (win: BrowserWindow) => {
     useFile(win)
 }
 
-export const close = () => {
-    processStopAll()
-    useWebsocketClose()
-    useHttpServeClose()
+export const useProcessStop = async() => {
+    await processStopAll()
+    await useWebsocketClose()
+    await useHttpServeClose()
 }

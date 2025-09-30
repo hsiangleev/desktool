@@ -1,7 +1,7 @@
 import { app, BrowserWindow } from 'electron'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import { useModule, close } from './module'
+import { useModule, useProcessStop } from './module'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -30,8 +30,15 @@ function createWindow() {
         win.loadFile(path.join(__dirname, '../renderer/index.html'))
     }
 
-    win.on('closed', () => {
-        close()
+    win.on('close', async(event) => {
+        event.preventDefault() // 阻止立刻关闭
+        try {
+            await useProcessStop()
+            win?.destroy()
+        } catch (err) {
+            console.error('清理失败:', err)
+            win?.destroy() // 失败时仍然强制关闭
+        }
         win = null
     })
     useModule(win)

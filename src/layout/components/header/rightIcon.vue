@@ -8,5 +8,8 @@
 <script setup lang='ts'>
 const min = async() => await window.electronAPI.send('window-control', 'minimize')
 const max = async() => await window.electronAPI.send('window-control', 'maximize')
-const close = async() => await window.electronAPI.send('window-control', 'close')
+const close = async() => {
+    epsLayerLoading('关闭中...')
+    await window.electronAPI.send('window-control', 'close')
+}
 </script>

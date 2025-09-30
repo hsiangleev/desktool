@@ -61,7 +61,8 @@ export const useHttpServe = (win: BrowserWindow, channel: string, baseDir: strin
 
 export const useHttpServeClose = () => {
     return new Promise(resolve => {
-        ht?.close(err => {
+        if(!ht) return resolve('')
+        ht.close(err => {
             if (err) return resolve(err.message)
             ht = null
             resolve('服务已停止')

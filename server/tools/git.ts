@@ -70,7 +70,12 @@ export const processStop = async(stopId: string) => {
     })
 }
 
-export const processStopAll = () => Object.keys(processObject).forEach(v => processStop(v))
+/** 停止所有正在执行的程序 */
+export const processStopAll = async() => {
+    for (const key of processObject.keys()) {
+        await processStop(key)
+    }
+}
 
 /** 储存 */
 export const gitStashIn = async(win: BrowserWindow, channel: string, cwd: string) => {
