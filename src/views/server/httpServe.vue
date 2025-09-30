@@ -13,7 +13,7 @@
             </el-form-item>
         </el-form>
         <el-divider border-style='dashed'>日志</el-divider>
-        <div class='content-log'><EpsCodeJs ref='codeRef' v-model='log' is-readonly class='res-log' /></div>
+        <div class='content-log'><EpsXtermjs ref='codeRef' disabled /></div>
     </div>
 </template>
 <script setup lang='ts'>
@@ -32,18 +32,20 @@ const rules = ref<Partial<Record<string, Arrayable<FormItemRule>>>>({
     baseDir: { required: true, message: '资源地址不能为空' },
     port: { required: true, message: '启动端口不能为空' }
 })
-const log = ref(form.isStart ? '服务运行中...' : '服务尚未启动')
-const codeRef = ref()
+onMounted(() => {
+    codeRef.value?.appendText(form.isStart ? '服务运行中...' : '服务尚未启动')
+})
+const codeRef = useTemplateRef('codeRef')
 window.electronAPI.on('connectHttpServe', (_, res) => codeRef.value?.appendText(res))
 const submitForm = async(formEl: FormInstance | undefined) => {
     if(!await epsFormSubmit(formEl)) return
     try {
-        log.value = '正在启动服务...'
+        codeRef.value?.insert('正在启动服务...')
         await window.electronAPI.invoke('connectHttpServe', { baseDir: form.baseDir, port: form.port })
         form.isStart = true
         setSession('httpServe', form)
     } catch (error) {
-        log.value = `${error}`
+        codeRef.value?.insert(`${error}`)
     }
 }
 const close = async() => {

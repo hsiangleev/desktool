@@ -32,7 +32,7 @@
                 </el-form-item>
             </el-form>
         </div>
-        <div class='h-full w-1/2'><EpsCodeJs ref='codeRef' v-model='log' is-readonly class='res-log' /></div>
+        <div class='h-full w-1/2'><EpsXtermjs ref='codeRef' disabled /></div>
     </div>
 </template>
 <script setup lang='ts'>
@@ -47,8 +47,7 @@ class IForm {
     selectPackage: {name: string, version: string}[] = []
 }
 const form = reactive(new IForm())
-const codeRef = ref()
-const log = ref('')
+const codeRef = useTemplateRef('codeRef')
 const ruleFormRef = ref()
 const packageChange = () => form.selectPackage = form.package.map(v => ({ name: v, version: '' }))
 
@@ -62,7 +61,7 @@ const rules = ref<Partial<Record<string, Arrayable<FormItemRule>>>>({
 
 const changeRootPath = async() => {
     projectOptions.value = []
-    log.value = ''
+    codeRef.value?.clear()
     projectOptions.value = await loadProject(form.rootPath)
 }
 
@@ -71,7 +70,7 @@ const submitForm = async(formEl: FormInstance | undefined) => {
     if(!await epsFormSubmit(formEl)) return
     try {
         await epsLayerConfirm('确认是否更新？', 'warning')
-        log.value = '开始更新'
+        codeRef.value?.insert('开始更新')
         await window.electronAPI.invoke('updatePackage', {
             dirList: form.project.map(v => v),
             packages: form.selectPackage.map(v => `${v.name}@${v.version}`),

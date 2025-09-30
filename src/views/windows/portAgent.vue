@@ -20,7 +20,7 @@
         </el-table>
     
         <el-divider border-style='dashed'>日志</el-divider>
-        <div class='h-40'><EpsCodeJs ref='codeRef' v-model='log' is-readonly class='res-log' /></div>
+        <div class='h-40'><EpsXtermjs ref='codeRef' disabled /></div>
 
         
         <el-dialog
@@ -63,8 +63,7 @@ class IPortAgent {
     connectport?: number
 }
 const tableData = ref<IPortAgent[]>([])
-const log = ref('')
-const codeRef = ref()
+const codeRef = useTemplateRef('codeRef')
 const dialogVisible = ref(false)
 const tableRef = ref()
 window.electronAPI.on('portAgentList', (_, res: string) => {
@@ -90,7 +89,7 @@ const del = async(row: IPortAgent) => await window.electronAPI.invoke('portAgent
 const portAgentDel = async(row: IPortAgent[]) => {
     try {
         await epsLayerConfirm('确定是否删除？', 'warning')
-        log.value = ''
+        codeRef.value?.clear()
         const s = row.map(v => new Promise(resolve => del(v).then(() => resolve({}))))
         await Promise.all(s)
         await getPortAgentList()
@@ -102,7 +101,7 @@ const portAgentMultDel = async() => {
     await portAgentDel(sels)
 }
 const portAgentReset = async(row: IPortAgent) => {
-    log.value = ''
+    codeRef.value?.clear()
     await del(row)
     const { listenaddress, listenport, connectaddress, connectport } = row
     await window.electronAPI.invoke('portAgentAdd', { listenaddress, listenport, connectaddress, connectport })
@@ -128,7 +127,7 @@ const getPortAgentList = async() => {
 window.electronAPI.on('portAgentAdd', (_, res: string) => codeRef.value?.appendText(res))
 const submitForm = async(formEl: FormInstance | undefined) => {
     if(!await epsFormSubmit(formEl)) return
-    log.value = ''
+    codeRef.value?.clear()
     const { listenaddress, listenport, connectaddress, connectport } = form.value
     await window.electronAPI.invoke('portAgentAdd', { listenaddress, listenport, connectaddress, connectport })
     await getPortAgentList()

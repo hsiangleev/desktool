@@ -25,7 +25,7 @@
         </el-table>
     
         <el-divider border-style='dashed'>日志</el-divider>
-        <div class='h-1/2'><EpsCodeJs ref='codeRef' v-model='log' is-readonly class='res-log' /></div>
+        <div class='h-1/2'><EpsXtermjs ref='codeRef' disabled /></div>
 
         <el-dialog
             v-model='dialogVisible'
@@ -67,14 +67,13 @@ class ICommand {
 const getLocalDefaultData = (getLocal<ICommand[]>('commandManager') ?? [])
 getLocalDefaultData.forEach(v => v.isRunning = false)
 const tableData = ref(getLocalDefaultData)
-const log = ref('')
-const codeRef = ref()
+const codeRef = useTemplateRef('codeRef')
 const tableRef = ref()
 window.electronAPI.on('startCommand', (_, res: string) => codeRef.value?.appendText(res))
 window.electronAPI.on('processStop', (_, res: string) => codeRef.value?.appendText(res))
 const start = async(row: ICommand) => {
     const { command, stopId } = row
-    log.value = `开始执行${command}命令`
+    codeRef.value?.insert(`开始执行${command}命令`)
     row.isRunning = true
     await window.electronAPI.invoke('startCommand', { command, stopId })
     row.isRunning = false

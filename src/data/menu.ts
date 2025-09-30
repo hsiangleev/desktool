@@ -128,8 +128,8 @@ const menu: IMenu[] = [
             },
             {
                 id: `${++index}`,
-                path: '/npm/updatePackage',
-                component: routerMenu['npm/updatePackage'],
+                path: '/git/updatePackage',
+                component: routerMenu['git/updatePackage'],
                 meta: { menuName: '更新软件包', menuType: 2 }
             },
             {

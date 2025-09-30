@@ -21,7 +21,7 @@
         </el-table>
     
         <el-divider border-style='dashed'>日志</el-divider>
-        <div class='h-40'><EpsCodeJs ref='codeRef' v-model='log' is-readonly class='res-log' /></div>
+        <div class='h-40'><EpsXtermjs ref='codeRef' disabled /></div>
     </div>
 </template>
 <script setup lang='ts'>
@@ -32,8 +32,7 @@ class IPortAgent {
 }
 const tableData = ref<IPortAgent[]>([])
 const serverList = ref(getLocal<string[]>('serverManager') ?? [])
-const log = ref('')
-const codeRef = ref()
+const codeRef = useTemplateRef('codeRef')
 const tableRef = ref()
 const matchServer = (str: string) => {
     const nameMatch = str.match(/SERVICE_NAME:\s+(\S+)/)

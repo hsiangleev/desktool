@@ -13,7 +13,7 @@
             </el-form-item>
         </el-form>
         <el-divider border-style='dashed'>日志</el-divider>
-        <div class='content-log'><EpsCodeJs ref='codeRef' v-model='log' is-readonly class='res-log' /></div>
+        <div class='content-log'><EpsXtermjs ref='codeRef' disabled /></div>
     </div>
 </template>
 <script setup lang='ts'>
@@ -31,21 +31,23 @@ const ruleFormRef = ref()
 const rules = ref<Partial<Record<string, Arrayable<FormItemRule>>>>({
     ip: { required: true, message: '连接地址不能为空' }
 })
-const log = ref(form.isStart ? '已连接' : '尚未连接')
-const codeRef = ref()
+const codeRef = useTemplateRef('codeRef')
+onMounted(() => {
+    codeRef.value?.appendText(form.isStart ? '已连接' : '尚未连接')
+})
 window.electronAPI.on('connectWebsocket', (_, res) => {
     codeRef.value?.appendText(res.msg)
     if(res.code !== 0) close(false)
 })
 const submitForm = async(formEl: FormInstance | undefined) => {
     if(!await epsFormSubmit(formEl)) return
-    log.value = '开始连接中...'
+    codeRef.value?.insert('开始连接中...')
     try {
         await window.electronAPI.invoke('connectWebsocket', { ip: form.ip, isBase64: form.isBase64 })
         form.isStart = true
         setSession('websocket', form)
     } catch (error) {
-        log.value = `${error}`
+        codeRef.value?.insert(`${error}`)
     }
 }
 const close = async(ismsg = true) => {

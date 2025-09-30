@@ -3,7 +3,7 @@
         <div class='h-full w-1/2' shadow='never'>
             <el-form ref='ruleFormRef' :model='form' :rules='rules' label-width='80px' @submit.prevent>
                 <el-form-item label='根目录' prop='rootPath'>
-                    <EpsSelectDir v-model='form.rootPath' type='clone' @change='log=""' />
+                    <EpsSelectDir v-model='form.rootPath' type='clone' @change='() => codeRef?.clear()' />
                 </el-form-item>
                 <el-form-item label='克隆项目' prop='url'>
                     <el-input v-model='form.url' placeholder='请输入项目地址' @keyup.enter='cloneProject(ruleFormRef)' />
@@ -15,7 +15,7 @@
                 </el-form-item>
             </el-form>
         </div>
-        <div class='h-full w-1/2'><EpsCodeJs ref='codeRef' :model-value='log' is-readonly class='res-log' /></div>
+        <div class='h-full w-1/2'><EpsXtermjs ref='codeRef' disabled /></div>
     </div>
 </template>
 <script setup lang='ts'>
@@ -28,8 +28,7 @@ class IForm {
     isStart = false
 }
 const form = reactive(getSession<IForm>('gitClone') ?? new IForm())
-const codeRef = ref()
-const log = ref('')
+const codeRef = useTemplateRef('codeRef')
 const ruleFormRef = ref()
 const rules = ref<Partial<Record<string, Arrayable<FormItemRule>>>>({
     rootPath: { required: true, message: '项目根目录不能为空' },
@@ -40,7 +39,7 @@ const stopId = `${Date.now()}`
 window.electronAPI.on('gitClone', (_, res) => codeRef.value?.appendText(res))
 const cloneProject = async(formEl: FormInstance | undefined) => {
     if(!await epsFormSubmit(formEl)) return
-    log.value = '开始克隆'
+    codeRef.value?.insert('开始克隆')
     form.isStart = true
     setSession('gitClone', form)
     await window.electronAPI.invoke('gitClone', { repoUrl: form.url, targetDir: form.rootPath, stopId })

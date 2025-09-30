@@ -24,7 +24,7 @@
             </el-form-item>
         </el-form>
         <el-divider border-style='dashed'>日志</el-divider>
-        <div class='content-log'><EpsCodeJs ref='codeRef' v-model='log' is-readonly class='res-log' /></div>
+        <div class='content-log'><EpsXtermjs ref='codeRef' disabled /></div>
 
         <el-dialog
             v-model='dialogVisible'
@@ -57,7 +57,6 @@ class IForm {
     prefix = ''
 }
 const form = reactive(getLocal<IForm>('cloudflareImg') ?? new IForm())
-const log = ref('')
 const dialogVisible = ref(false)
 
 const ruleFormRef = ref()
@@ -65,13 +64,13 @@ const rules = ref<Partial<Record<string, Arrayable<FormItemRule>>>>({
     rootPath: { required: true, message: '目录不能为空' },
     projectName: { required: true, message: '项目名称不能为空' }
 })
-const codeRef = ref()
+const codeRef = useTemplateRef('codeRef')
 window.electronAPI.on('cloudflareImg', (_, res) => {
     codeRef.value?.appendText(res)
 })
 const submitForm = async(formEl: FormInstance | undefined) => {
     if(!await epsFormSubmit(formEl)) return
-    log.value = ''
+    codeRef.value?.clear()
     const res = await window.electronAPI.invoke('cloudflareImg', { rootPath: form.rootPath, projectName: form.projectName })
     setLocal('cloudflareImg', form)
     if(res.code === 0 && imgResUrl.value.length > 0 && form.domain) {
@@ -86,13 +85,13 @@ const imgResUrl = ref<string[]>([])
 const uploadFile = async() => {
     if(!form.imgPath || !form.rootPath) return
     const res = await window.electronAPI.invoke('copyFileImgTime', { sourcePath: form.imgPath, destDir: form.rootPath, prefix: form.prefix })
-    log.value = res.msg
+    codeRef.value?.insert(res.msg)
     if(res.code === 0) imgResUrl.value.push(res.data)
 }
 const saveImgByClipboard = async() => {
     if(!form.rootPath) return
     const res = await window.electronAPI.invoke('saveImgByClipboard', { destDir: form.rootPath, prefix: form.prefix })
-    log.value = res.msg
+    codeRef.value?.insert(res.msg)
     if(res.code === 0) imgResUrl.value.push(res.data)
 }
 </script>

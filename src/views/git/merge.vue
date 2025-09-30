@@ -20,7 +20,7 @@
                 </el-form-item>
             </el-form>
         </div>
-        <div class='h-full w-1/2'><EpsCodeJs ref='codeRef' v-model='log' is-readonly class='res-log' /></div>
+        <div class='h-full w-1/2'><EpsXtermjs ref='codeRef' disabled /></div>
     </div>
 </template>
 <script setup lang='ts'>
@@ -33,8 +33,7 @@ const form = reactive({
     targetBranch: '',
     project: []
 })
-const codeRef = ref()
-const log = ref('')
+const codeRef = useTemplateRef('codeRef')
 const ruleFormRef = ref()
 const projectOptions = ref([])
 const rules = ref<Partial<Record<string, Arrayable<FormItemRule>>>>({
@@ -44,7 +43,7 @@ const rules = ref<Partial<Record<string, Arrayable<FormItemRule>>>>({
     project: { required: true, message: '请选择项目' }
 })
 const changeRootPath = async() => {
-    log.value = ''
+    codeRef.value?.clear()
     projectOptions.value = await loadProject(form.rootPath)
 }
 
@@ -53,7 +52,7 @@ const submitForm = async(formEl: FormInstance | undefined) => {
     if(!await epsFormSubmit(formEl)) return
     try {
         await epsLayerConfirm('确认是否合并？', 'warning')
-        log.value = '开始合并'
+        codeRef.value?.insert('开始合并')
         await window.electronAPI.invoke('gitMerge', {
             dirList: form.project.map(v => v), 
             origin: form.originBranch, 
