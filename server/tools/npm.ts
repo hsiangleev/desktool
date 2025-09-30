@@ -1,8 +1,9 @@
 import type { BrowserWindow } from 'electron'
-import { getCurrentBranch, gitStashIn, gitStashOut, spawnCommand, switchOrCreateBranch } from './git'
+import { getCurrentBranch, gitStashIn, gitStashOut, switchOrCreateBranch } from './git'
 import path from 'path'
 import fs from 'fs'
 import { loadConfigFile } from './tools'
+import { spawnCommand } from './command'
 
 export const updatePackage = async(win: BrowserWindow, dirList: string[], packages: string[], branch: string) => {
     const { config } = loadConfigFile()

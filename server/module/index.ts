@@ -2,7 +2,7 @@ import { useHttp } from './http'
 import { useFile } from './file'
 import { useEvent } from './event'
 import type { BrowserWindow } from 'electron'
-import { processStopAll } from '~/tools/git'
+import { processStopAll } from '~/tools/command'
 import { useWebsocketClose } from '~/tools/websocket'
 import { useHttpServeClose } from '~/tools/http'
 

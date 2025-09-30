@@ -16,8 +16,8 @@
             <el-table-column prop='index' label='排序' width='60' />
             <el-table-column fixed='right' label='操作' width='200'>
                 <template #default='scope'>
-                    <el-button link type='primary' size='small' @click='start(scope.row)'>执行</el-button>
-                    <el-button link type='primary' size='small' @click='stop(scope.row.stopId)'>停止</el-button>
+                    <el-button v-if='!scope.row.isRunning' link type='primary' size='small' @click='start(scope.row)'>执行</el-button>
+                    <el-button v-else link type='primary' size='small' @click='stop(scope.row.stopId)'>停止</el-button>
                     <el-button link type='primary' size='small' @click='edit(scope.row)'>编辑</el-button>
                     <el-button link type='danger' size='small' @click='remove(scope.row.stopId)'>删除</el-button>
                 </template>

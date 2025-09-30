@@ -1,6 +1,7 @@
 import { BrowserWindow, ipcMain } from 'electron'
 import { selFileImg, openMdFile, saveMdFile, sellectDir, uploadCloudflareImg, copyFileImgTime, saveImgByClipboard, portAgentList, portAgentAdd, portAgentDel, getServerName, startServerName, stopServerName, startCommand } from '~/tools/file'
-import { gitClone, gitMerge, processStop } from '~/tools/git'
+import { gitClone, gitMerge } from '~/tools/git'
+import { processStop } from '~/tools/command'
 import { updatePackage } from '~/tools/npm'
 import { loadConfigFile, useReaddir } from '~/tools/tools'
 import { pathToFileURL, fileURLToPath } from 'url'

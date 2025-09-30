@@ -1,7 +1,7 @@
 import { BrowserWindow, clipboard, dialog } from 'electron'
 import fs from 'fs'
 import path from 'path'
-import { spawnCommand } from './git'
+import { spawnCommand } from './command'
 
 export const saveMdFile = async(win: BrowserWindow, text: string) => {
     try {
