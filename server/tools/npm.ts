@@ -13,12 +13,12 @@ export const updatePackage = async(win: BrowserWindow, dirList: string[], packag
         const oldBranch = await getCurrentBranch(cwd)
         await gitStashIn(win, 'updatePackage', cwd)
         await switchOrCreateBranch(win, 'updatePackage', cwd, branch)
-        await spawnCommand(win, 'updatePackage', 'git', ['pull', 'origin', branch, '--progress'], cwd)
+        await spawnCommand(win, 'updatePackage', 'git', ['pull', 'origin', branch, '--progress'], { cwd })
         // 安装包
         for (const pac of packages) {
             win.webContents.send('updatePackage', `✅项目${projectName}开始安装依赖${pac}`)
             win.webContents.send('updatePackage', '{')
-            await spawnCommand(win, 'updatePackage', 'npm', ['install', pac, '-D', '--save-exact', '--progress=true', '--verbose', `--registry=${config.publicRegistry}`], cwd)
+            await spawnCommand(win, 'updatePackage', 'npm', ['install', pac, '-D', '--save-exact', '--progress=true', '--verbose', `--registry=${config.publicRegistry}`], { cwd })
             win.webContents.send('updatePackage', '}')
             win.webContents.send('updatePackage', `✅项目${projectName}依赖${pac}安装完成`)
         }
@@ -26,11 +26,11 @@ export const updatePackage = async(win: BrowserWindow, dirList: string[], packag
         if(config.updateVersion.includes(projectName)) {
             win.webContents.send('updatePackage', '更新package.json版本')
             updatePackageVersion(cwd)
-            await spawnCommand(win, 'updatePackage', 'npm', ['install', '--progress=true', '--verbose', `--registry=${config.publicRegistry}`], cwd)
+            await spawnCommand(win, 'updatePackage', 'npm', ['install', '--progress=true', '--verbose', `--registry=${config.publicRegistry}`], { cwd })
         }
         // 推送
-        await spawnCommand(win, 'updatePackage', 'git', ['commit', '-a', '-m', '依赖更新'], cwd)
-        await spawnCommand(win, 'updatePackage', 'git', ['push', 'origin', branch], cwd)
+        await spawnCommand(win, 'updatePackage', 'git', ['commit', '-a', '-m', '依赖更新'], { cwd })
+        await spawnCommand(win, 'updatePackage', 'git', ['push', 'origin', branch], { cwd })
         // 切回初始状态
         await switchOrCreateBranch(win, 'updatePackage', cwd, oldBranch)
         await gitStashOut(win, 'updatePackage', cwd)

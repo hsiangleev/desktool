@@ -35,7 +35,7 @@ const rules = ref<Partial<Record<string, Arrayable<FormItemRule>>>>({
     rootPath: { required: true, message: '项目根目录不能为空' },
     url: { required: true, message: '项目地址不能为空' }
 })
-
+const stopId = `${Date.now()}`
 /** 克隆 */
 window.electronAPI.on('gitClone', (_, res) => codeRef.value?.appendText(res))
 const cloneProject = async(formEl: FormInstance | undefined) => {
@@ -43,10 +43,10 @@ const cloneProject = async(formEl: FormInstance | undefined) => {
     log.value = '开始克隆'
     form.isStart = true
     setSession('gitClone', form)
-    await window.electronAPI.invoke('gitClone', { repoUrl: form.url, targetDir: form.rootPath })
+    await window.electronAPI.invoke('gitClone', { repoUrl: form.url, targetDir: form.rootPath, stopId })
 }
 const stopProject = async() => {
-    const res = await window.electronAPI.invoke('processStop')
+    const res = await window.electronAPI.invoke('processStop', stopId)
     codeRef.value?.appendText(res)
     form.isStart = false
     setSession('gitClone', form)

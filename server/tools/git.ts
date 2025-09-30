@@ -4,22 +4,42 @@ import kill from 'tree-kill'
 import simpleGit from 'simple-git'
 import spawn from 'cross-spawn'
 import { type ChildProcess } from 'child_process'
+import iconv from 'iconv-lite'
+import os from 'os'
 
-let processItem: ChildProcess | null = null
+const processObject:Map<string, ChildProcess> = new Map()
 
+interface IOtherParams {
+    cwd?: string
+    stopId?: string
+}
 /** 执行系统命令 */
-export const spawnCommand = (win: BrowserWindow, channel: string, command: string, args: string[], cwd?: string) => {
+export const spawnCommand = (win: BrowserWindow, channel: string, command: string, args: string[], params:IOtherParams = {}) => {
+    const { cwd, stopId } = params
     return new Promise(resolve => {
-        processItem = spawn(command, args, { cwd })
+        const processItem = spawn(command, args, { cwd })
+        stopId && processObject.set(stopId, processItem)
+
+        const isWin = os.platform() === 'win32'
+
+        const decode = (data: any) => {
+            // Node CLI 输出大部分是 utf8
+            const utf8 = data.toString('utf8')
+            // 如果有明显乱码再尝试 GBK
+            if (/�/.test(utf8)) return iconv.decode(data, 'gbk')
+            return utf8
+        }
 
         // 打印标准输出
         processItem.stdout?.on('data', (data) => {
-            win.webContents.send(channel, data.toString())
+            const text = isWin ? decode(data) : data.toString('utf8')
+            win.webContents.send(channel, text)
         })
 
         // 打印错误输出
         processItem.stderr?.on('data', (data) => {
-            win.webContents.send(channel, data.toString())
+            const text = isWin ? decode(data) : data.toString('utf8')
+            win.webContents.send(channel, text)
         })
 
         // 结束
@@ -29,22 +49,28 @@ export const spawnCommand = (win: BrowserWindow, channel: string, command: strin
             } else {
                 win.webContents.send(channel, `操作失败，退出码 ${code}`)
             }
+            stopId && processObject.delete(stopId)
             resolve('')
         })
     })
 }
 
-export const processStop = async() => {
+export const processStop = async(stopId: string) => {
     return new Promise(resolve => {
+        const processItem = processObject.get(stopId)
         if(processItem && processItem.pid) {
             kill(processItem.pid, 'SIGKILL', (err) => {
                 if (err) resolve('❌ 结束失败:')
                 else resolve('✅ 已终止')
             })
-            processItem = null
+            processObject.delete(stopId)
+        }else{
+            resolve('命令已结束或未执行')
         }
     })
 }
+
+export const processStopAll = () => Object.keys(processObject).forEach(v => processStop(v))
 
 /** 储存 */
 export const gitStashIn = async(win: BrowserWindow, channel: string, cwd: string) => {
@@ -129,10 +155,10 @@ export const getCurrentBranch = async(cwd: string) => {
     return branch.trim()
 }
 
-export const gitClone = async(win: BrowserWindow, repoUrl: string, targetDir: string) => {
+export const gitClone = async(win: BrowserWindow, repoUrl: string, targetDir: string, stopId: string) => {
     const fileName = repoUrl.match(/([^/]+)(?=\.git$)/)
     const target = path.resolve(targetDir, fileName ? fileName[1] : '')
-    await spawnCommand(win, 'gitClone', 'git', ['clone', '--progress', repoUrl, target])
+    await spawnCommand(win, 'gitClone', 'git', ['clone', '--progress', repoUrl, target], { stopId })
 }
 
 export const gitMerge = async(win: BrowserWindow, cwds: string[], origin: string, target: string) => {
@@ -146,10 +172,10 @@ export const gitMerge = async(win: BrowserWindow, cwds: string[], origin: string
         const oldBranch = await getCurrentBranch(cwd)
         await gitStashIn(win, 'gitMerge', cwd)
         await switchOrCreateBranch(win, 'gitMerge', cwd, origin)
-        await spawnCommand(win, 'gitMerge', 'git', ['pull', 'origin', origin, '--progress'], cwd)
+        await spawnCommand(win, 'gitMerge', 'git', ['pull', 'origin', origin, '--progress'], { cwd })
         await switchOrCreateBranch(win, 'gitMerge', cwd, target)
-        await spawnCommand(win, 'gitMerge', 'git', ['reset', '--hard', origin], cwd)
-        await spawnCommand(win, 'gitMerge', 'git', ['push', 'origin', target, '-f', '--progress'], cwd)
+        await spawnCommand(win, 'gitMerge', 'git', ['reset', '--hard', origin], { cwd })
+        await spawnCommand(win, 'gitMerge', 'git', ['push', 'origin', target, '-f', '--progress'], { cwd })
         await switchOrCreateBranch(win, 'gitMerge', cwd, oldBranch)
         await gitStashOut(win, 'gitMerge', cwd)
         win.webContents.send('gitMerge', '----------------------------------------')

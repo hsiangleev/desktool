@@ -49,7 +49,7 @@ window.electronAPI.on('startServerName', (_, res: string) => codeRef.value?.appe
 window.electronAPI.on('stopServerName', (_, res: string) => codeRef.value?.appendText(res))
 const start = async(serverName: string) => {
     const { close } = epsLayerLoading()
-    const res = await window.electronAPI.invoke('startServerName', serverName)
+    const res = await window.electronAPI.invoke('startServerName', { serverName })
     if(res.code === 0) {
         await epsSleep(2000)
         await getPortAgentList()
@@ -58,7 +58,7 @@ const start = async(serverName: string) => {
 }
 const stop = async(serverName: string) => {
     const { close } = epsLayerLoading()
-    const res = await window.electronAPI.invoke('stopServerName', serverName)
+    const res = await window.electronAPI.invoke('stopServerName', { serverName })
     if(res.code === 0) {
         await epsSleep(2000)
         await getPortAgentList()
@@ -77,7 +77,7 @@ const add = async() => {
             type: 'text',
             placeholder: '请输入常用服务名称'
         })
-        await window.electronAPI.invoke('getServerName', value)
+        await window.electronAPI.invoke('getServerName', { serverName: value })
     } catch {}
 }
 window.electronAPI.on('getServerName', (_, res: string) => {
@@ -100,7 +100,7 @@ const getPortAgentList = async() => {
     tableData.value = []
     const s = getLocal<string[]>('serverManager') ?? []
     for (const element of s) {
-        await window.electronAPI.invoke('getServerName', element)
+        await window.electronAPI.invoke('getServerName', { serverName: element })
     }
 }
 getPortAgentList()

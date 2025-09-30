@@ -1,5 +1,5 @@
 import { BrowserWindow, ipcMain } from 'electron'
-import { selFileImg, openMdFile, saveMdFile, sellectDir, uploadCloudflareImg, copyFileImgTime, saveImgByClipboard, portAgentList, portAgentAdd, portAgentDel, getServerName, startServerName, stopServerName } from '~/tools/file'
+import { selFileImg, openMdFile, saveMdFile, sellectDir, uploadCloudflareImg, copyFileImgTime, saveImgByClipboard, portAgentList, portAgentAdd, portAgentDel, getServerName, startServerName, stopServerName, startCommand } from '~/tools/file'
 import { gitClone, gitMerge, processStop } from '~/tools/git'
 import { updatePackage } from '~/tools/npm'
 import { loadConfigFile, useReaddir } from '~/tools/tools'
@@ -47,12 +47,12 @@ export const useFile = (win: BrowserWindow) => {
     })
     
     ipcMain.handle('gitClone', async(_, res) => {
-        const { repoUrl, targetDir } = res
-        await gitClone(win, repoUrl, targetDir)
+        const { repoUrl, targetDir, stopId } = res
+        await gitClone(win, repoUrl, targetDir, stopId)
     })
     
-    ipcMain.handle('processStop', async() => {
-        return await processStop()
+    ipcMain.handle('processStop', async(_, res) => {
+        return await processStop(res)
     })
     
     ipcMain.handle('updatePackage', async(_, res) => {
@@ -85,15 +85,23 @@ export const useFile = (win: BrowserWindow) => {
         return pathToFileURL(pluginPath).href
     })
 
-    ipcMain.handle('getServerName', async(_, serverName) => {
+    ipcMain.handle('getServerName', async(_, res) => {
+        const { serverName } = res
         return getServerName(win, serverName)
     })
 
-    ipcMain.handle('startServerName', async(_, serverName) => {
+    ipcMain.handle('startServerName', async(_, res) => {
+        const { serverName } = res
         return startServerName(win, serverName)
     })
 
-    ipcMain.handle('stopServerName', async(_, serverName) => {
+    ipcMain.handle('stopServerName', async(_, res) => {
+        const { serverName } = res
         return stopServerName(win, serverName)
+    })
+
+    ipcMain.handle('startCommand', async(_, res) => {
+        const { command, stopId } = res
+        return startCommand(win, command, stopId)
     })
 }

@@ -48,6 +48,7 @@
     "eslint": "^9.32.0",
     "eslint-plugin-vue": "^10.4.0",
     "form-data": "^4.0.4",
+    "iconv-lite": "^0.7.0",
     "jsencrypt": "^3.5.4",
     "md-editor-v3": "^6.0.1",
     "npm-run-all": "^4.1.5",

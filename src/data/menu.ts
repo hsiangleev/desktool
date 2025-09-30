@@ -104,7 +104,7 @@ const menu: IMenu[] = [
             {
                 id: `${++index}`,
                 path: '/server/httpServe',
-                component: routerMenu['tools/httpServe'],
+                component: routerMenu['server/httpServe'],
                 meta: { menuName: '静态服务器', menuType: 2 }
             }
         ]
@@ -156,6 +156,12 @@ const menu: IMenu[] = [
                 path: '/windows/serverManager',
                 component: routerMenu['windows/serverManager'],
                 meta: { menuName: '常用服务管理', menuType: 2 }
+            },
+            {
+                id: `${++index}`,
+                path: '/windows/commandManager',
+                component: routerMenu['windows/commandManager'],
+                meta: { menuName: '常用命令管理', menuType: 2 }
             }
         ]
     }
