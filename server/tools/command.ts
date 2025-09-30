@@ -14,7 +14,7 @@ interface IOtherParams {
 /** 执行系统命令 */
 export const spawnCommand = (win: BrowserWindow, channel: string, command: string, args: string[], params:IOtherParams = {}) => {
     const { cwd, stopId } = params
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
         const processItem = spawn(command, args, { cwd })
         stopId && processObject.set(stopId, processItem)
 
@@ -50,6 +50,8 @@ export const spawnCommand = (win: BrowserWindow, channel: string, command: strin
             stopId && processObject.delete(stopId)
             resolve('')
         })
+
+        processItem.on('error', reject)
     })
 }
 

@@ -84,8 +84,12 @@ const stop = async(stopId: string) => {
     codeRef.value?.appendText(res)
 }
 const remove = async(stopId: string) => {
-    tableData.value = tableData.value.filter(v => v.stopId !== stopId)
-    setLocal('commandManager', tableData.value)
+    try {
+        await epsLayerConfirm('确认删除该条数据？', 'warning')
+        tableData.value = tableData.value.filter(v => v.stopId !== stopId)
+        setLocal('commandManager', tableData.value)
+        epsLayerMsg('删除成功', 'success')
+    } catch {}
 }
 
 const dialogVisible = ref(false)
@@ -119,8 +123,12 @@ const submitForm = async(formEl: FormInstance | undefined) => {
 const MultDel = async() => {
     const sels = tableRef.value?.getSelectionRows() as ICommand[]
     if(sels.length === 0) return epsLayerMsg('当前尚未选择数据', 'warning')
-    sels.forEach(val => tableData.value = tableData.value.filter(v => v.stopId !== val.stopId))
-    setLocal('commandManager', tableData.value)
+    try {
+        await epsLayerConfirm('确认删除选中项？', 'warning')
+        sels.forEach(val => tableData.value = tableData.value.filter(v => v.stopId !== val.stopId))
+        setLocal('commandManager', tableData.value)
+        epsLayerMsg('删除成功', 'success')
+    } catch {}
 }
 </script>
 

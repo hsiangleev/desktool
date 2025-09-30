@@ -30,6 +30,14 @@ function createWindow() {
         win.loadFile(path.join(__dirname, '../renderer/index.html'))
     }
 
+    // 错误弹窗拦截
+    process.on('uncaughtException', (err) => {
+        console.error('Uncaught Exception:', err)
+    })
+    process.on('unhandledRejection', (reason) => {
+        console.error('Unhandled Rejection:', reason)
+    })
+
     win.on('close', async(event) => {
         event.preventDefault() // 阻止立刻关闭
         try {

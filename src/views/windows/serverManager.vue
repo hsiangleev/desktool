@@ -66,9 +66,13 @@ const stop = async(serverName: string) => {
     close()
 }
 const remove = async(serverName: string) => {
-    serverList.value = serverList.value.filter(v => v !== serverName)
-    tableData.value = tableData.value.filter(v => v.serverName !== serverName)
-    setLocal('serverManager', serverList.value)
+    try {
+        await epsLayerConfirm(`确认移除常用服务${serverName}？`, 'warning')
+        serverList.value = serverList.value.filter(v => v !== serverName)
+        tableData.value = tableData.value.filter(v => v.serverName !== serverName)
+        setLocal('serverManager', serverList.value)
+        epsLayerMsg('移除成功', 'success')
+    } catch {}
 }
 const add = async() => {
     try {
