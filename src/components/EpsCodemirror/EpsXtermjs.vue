@@ -17,13 +17,17 @@ const xtermRef = useTemplateRef('xtermjs')
 
 onMounted(() => {
     term = new Terminal({
-        disableStdin: props.disabled,
         convertEol: true,
         cursorBlink: !props.disabled,
+        cursorStyle: 'block',
         theme: {
-            background: '#000', // 背景色
-            foreground: '#ffffff' // 字体颜色
-        }
+            background: '#555', // 背景色
+            foreground: '#0f0' // 字体颜色
+        },
+        fontFamily: 'Consolas, "Microsoft YaHei Mono"',
+        fontSize: 14,
+        fontWeight: 300,
+        fontWeightBold: 300
     })
     fitAddon = new FitAddon()
     term.loadAddon(fitAddon)
@@ -31,11 +35,15 @@ onMounted(() => {
     fitAddon.fit()
     // 监听用户输入
     term.onData(data => term?.write(data))
-
+    term.attachCustomKeyEventHandler(() => {
+        // 禁止所有键盘输入
+        return !props.disabled
+    })
     window.addEventListener('resize', handleResize)
 })
 const handleResize = () => fitAddon && fitAddon.fit()
 
+onActivated(() => handleResize())
 onBeforeUnmount(() => {
     window.removeEventListener('resize', handleResize)
     term && term.dispose()

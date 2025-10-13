@@ -1,7 +1,9 @@
 <template>
-    <div class='el-empty'>
-        <div class='el-empty__image'>😁</div>
-        <div class='el-empty__description'><p>{{ text }}</p></div>
+    <div class='content'>
+        <div class='el-empty'>
+            <div class='el-empty__image'>😁</div>
+            <div class='el-empty__description'><p>{{ text }}</p></div>
+        </div>
     </div>
 </template>
 <script setup lang='ts'>
@@ -12,9 +14,19 @@ fetch('https://v1.hitokoto.cn/')
 </script>
 
 <style scoped>
-    .el-empty__image{
-        margin: 50px 0 10px;
-        font-size: 100px;
-        opacity: 0.3;
+.content {
+    height: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .el-empty{
+        padding: 0;
+
+        .el-empty__image{
+            font-size: 100px;
+            opacity: 0.3;
+        }
     }
+}
 </style>

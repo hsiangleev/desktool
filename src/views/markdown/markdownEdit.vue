@@ -15,6 +15,9 @@
             <Emoji>
                 <template #trigger><eps-icon class='my-editor-icon' type='bi:emoji-smile' /></template>
             </Emoji>
+            <button class='md-editor-toolbar-item' :title='isShowExample ? "切换文本" : "切换示例"' type='button' @click='openExample'>
+                <eps-icon class='my-editor-icon' type='bi:view-list' />
+            </button>
         </template>
     </MdEditor>
 </template>
@@ -89,6 +92,7 @@ const toolbars = ref([
     '-',
     'revoke',
     'next',
+    3,
     '=',
     'prettier',
     // 'pageFullscreen',
@@ -100,7 +104,21 @@ const toolbars = ref([
     // 'github'
 ])
 
-const text = ref(`## 😲 md-editor-v3
+const text = ref('')
+const isShowExample = ref(false)
+const temp = ref('')
+const openExample = () => {
+    if(!isShowExample.value) {
+        temp.value = text.value
+        text.value = example.value
+        isShowExample.value = true
+    }else{
+        text.value = temp.value
+        temp.value = ''
+        isShowExample.value = false
+    }
+}
+const example = ref(`## 😲 md-editor-v3
 
 Markdown 编辑器，vue3 版本，使用 jsx 模板 和 typescript 开发，支持切换主题、prettier 美化文本等。
 
