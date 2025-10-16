@@ -219,23 +219,23 @@ note、abstract、info、tip、success、question、warning、failure、danger�
 </script>
 
 <style scoped>
-    .markdown-edit {
-        height: 100%;
-    }
+.markdown-edit {
+    height: 100%;
+}
 
-    .my-editor-icon{
-        width: 16px;
-        height: 16px;
-        padding: 4px;
-        fill: none;
-        overflow: hidden;
-        display: block;
-        box-sizing: content-box;
-        font-size: 16px;
-    }
+.my-editor-icon{
+    width: 16px;
+    height: 16px;
+    padding: 4px;
+    fill: none;
+    overflow: hidden;
+    display: block;
+    box-sizing: content-box;
+    font-size: 16px;
+}
 
-    :deep(.emojis li) {
-        height: 28px;
-        line-height: 20px;
-    }
+:deep(.emojis li) {
+    height: 28px;
+    line-height: 20px;
+}
 </style>

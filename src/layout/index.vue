@@ -2,7 +2,7 @@
     <div class='layout'>
         <!-- 遮罩 -->
         <div 
-            class='layout-mask fixed z-1000 h-screen w-screen bg-black bg-opacity-50'
+            class='layout-mask fixed z-998 h-screen w-screen bg-black bg-opacity-50'
             :class='{"hidden": menuStatus !== IMenuStatus.PHE }'
             @click='updateCollapsed'
         />

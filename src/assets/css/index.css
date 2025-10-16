@@ -103,3 +103,11 @@ a {
 .layout-nodrag {
     -webkit-app-region: no-drag; /* 按钮不可拖动 */
 }
+
+/* 禁用 UnoCSS 原子类 */
+.md-editor-preview,
+.export-pdf-content {
+    ul,ol,li {
+        all: revert;    /* 重置回浏览器默认 */
+    }
+}
