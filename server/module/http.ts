@@ -1,11 +1,18 @@
-import { BrowserWindow, ipcMain } from 'electron'
-import { useTelnetTest } from '~/tools/tools'
+import { BrowserWindow, ipcMain, shell } from 'electron'
+import { getAppInfo, useTelnetTest } from '~/tools/tools'
 import { updateGitlabFile, useFetch } from '~/tools/http'
 import crypto from 'crypto'
 import { useWebsocket, useWebsocketClose } from '~/tools/websocket'
 import { useHttpServe, useHttpServeClose } from '~/tools/http'
 
 export const useHttp = (win: BrowserWindow) => {
+    ipcMain.handle('appInfo', async() => {
+        return getAppInfo()
+    })
+    ipcMain.handle('openExternal', async(_, url) => {
+        return shell.openExternal(url)
+    })
+
     ipcMain.handle('fetch', async(_, req) => {
         return useFetch(win, 'fetchFile', req)
     })

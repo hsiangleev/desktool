@@ -2,6 +2,7 @@ import { Socket } from 'net'
 import fs from 'fs'
 import path from 'path'
 import { app } from 'electron'
+import os from 'os'
 
 export const useTelnetTest = (host: string, port: number, timeout = 3000) => {
     return new Promise((resolve) => {
@@ -90,4 +91,25 @@ export const loadConfigFile = () => {
         configPath,
         config: JSON.parse(fs.readFileSync(configPath, 'utf-8'))
     }
+}
+
+export const getAppInfo = () => {
+    const packageJsonPath = path.join(__dirname, '../../package.json')
+    const { version, name, author } = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'))
+    return {
+        computer: {
+            platform: os.platform(),
+            arch: os.arch(),
+            release: os.release()
+        },
+        version: {
+            app: version,
+            electron: process.versions.electron,
+            node: process.versions.node,
+            chrome: process.versions.chrome
+        },
+        appName: name,
+        author
+    }
+    
 }
