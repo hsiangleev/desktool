@@ -18,7 +18,7 @@ const props = withDefaults(defineProps<IProps>(), {
 const { getLocal, setLocal } = epsLocal()
 const rootPath = reactive(getLocal<IObject>('rootPath') ?? {})
 
-const dir = defineModel<string>({ required: true })
+const dir = defineModel<string>({ required: false })
 const emit = defineEmits(['change'])
 const sellectDir = async() => {
     dir.value = await window.electronAPI.invoke(props.channel)

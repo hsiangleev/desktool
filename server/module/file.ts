@@ -102,7 +102,7 @@ export const useFile = (win: BrowserWindow) => {
     })
 
     ipcMain.handle('startCommand', async(_, res) => {
-        const { command, stopId } = res
-        return startCommand(win, command, stopId)
+        const { command, stopId, cwd } = res
+        return startCommand(win, command, stopId, cwd)
     })
 }

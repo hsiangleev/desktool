@@ -8,6 +8,7 @@
             <el-table-column type='index' width='50' />
             <el-table-column type='selection' width='55' />
             <el-table-column prop='command' label='命令' show-overflow-tooltip />
+            <el-table-column prop='alias' label='别名' width='100' show-overflow-tooltip />
             <el-table-column prop='isRunning' label='状态' width='90'>
                 <template #default='scope'>
                     <el-tag :type='scope.row.isRunning ? "success" : "info"'>{{ scope.row.isRunning ? "运行中" : "未运行" }}</el-tag>
@@ -37,6 +38,12 @@
                 <el-form-item prop='command' label='命令'>
                     <el-input v-model='form.command' placeholder='请输入命令' />
                 </el-form-item>
+                <el-form-item label='执行目录' prop='cwd'>
+                    <EpsSelectDir v-model='form.cwd' />
+                </el-form-item>
+                <el-form-item label='别名' prop='alias'>
+                    <el-input v-model='form.alias' placeholder='请输入别名' />
+                </el-form-item>
                 <el-form-item prop='index' label='排序'>
                     <el-input-number v-model='form.index' placeholder='请输入排序号' class='w-full' :min='1' :controls='false' />
                 </el-form-item>
@@ -57,6 +64,8 @@ const { getLocal, setLocal } = epsLocal()
 class ICommand {
     stopId = `${Date.now()}`
     command = ''
+    alias = ''
+    cwd = ''
     index = 1
     isRunning = false
 
@@ -72,10 +81,10 @@ const tableRef = ref()
 window.electronAPI.on('startCommand', (_, res: string) => codeRef.value?.appendText(res))
 window.electronAPI.on('processStop', (_, res: string) => codeRef.value?.appendText(res))
 const start = async(row: ICommand) => {
-    const { command, stopId } = row
+    const { command, stopId, cwd } = row
     codeRef.value?.insert(`开始执行${command}命令`)
     row.isRunning = true
-    await window.electronAPI.invoke('startCommand', { command, stopId })
+    await window.electronAPI.invoke('startCommand', { command, stopId, cwd: cwd || undefined })
     row.isRunning = false
 }
 const stop = async(stopId: string) => {

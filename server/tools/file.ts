@@ -178,10 +178,12 @@ export const stopServerName = async(win: BrowserWindow, serverName: string) => {
     }
 }
 
-export const startCommand = async(win: BrowserWindow, command: string, stopId: string) => {
-    const [commandName, ...params] = command.split(' ')
+export const startCommand = async(win: BrowserWindow, command: string, stopId: string, cwd?: string) => {
     try {
-        await spawnCommand(win, 'startCommand', commandName, params, { stopId })
+        for (const element of command.split('&&')) {
+            const [commandName, ...params] = element.trim().split(' ')
+            await spawnCommand(win, 'startCommand', commandName, params, { stopId, cwd })
+        }
         return { code: 0, msg: '命令执行结束' }
     } catch (error) {
         return { code: -1, msg: `${error}` }

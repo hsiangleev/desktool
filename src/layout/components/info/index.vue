@@ -34,7 +34,6 @@ const appInfo = ref<IObject>({})
 const dialogVisible = ref(false)
 onMounted(async() => {
     appInfo.value = await window.electronAPI.invoke('appInfo')
-    console.log(appInfo.value)
 })
 
 const openUrl = async() => {
