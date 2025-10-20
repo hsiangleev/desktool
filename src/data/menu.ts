@@ -62,6 +62,12 @@ const menu: IMenu[] = [
                 path: '/markdown/cloudflareImg',
                 component: routerMenu['markdown/cloudflareImg'],
                 meta: { menuName: 'cloudflare图床', menuType: 2 }
+            },
+            {
+                id: `${++index}`,
+                path: '/markdown/pdf',
+                component: routerMenu['markdown/pdf'],
+                meta: { menuName: 'pdfjs', menuType: 2 }
             }
         ]
     },

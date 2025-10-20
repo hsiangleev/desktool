@@ -11,7 +11,6 @@ export const useTelnetTest = (host: string, port: number, timeout = 3000) => {
         socket.setTimeout(timeout)
 
         socket.on('connect', () => {
-            console.log()
             socket.destroy()
             resolve({
                 isConnect: true,

@@ -14,6 +14,3 @@ app.use(ElementPlus)
 app.use(router)
 epsIconInit()
 app.mount('#app')
-
-
-// console.log(window.versions)

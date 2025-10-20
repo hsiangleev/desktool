@@ -122,7 +122,6 @@ const submitForm = async(formEl: FormInstance | undefined) => {
         file
     })
     close()
-    console.log(res)
     try {
         // 返回数组则代表是文件上传
         if(Array.isArray(res)) return
