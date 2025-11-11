@@ -3,23 +3,29 @@ import path from 'path'
 import simpleGit from 'simple-git'
 import { spawnCommand } from './command'
 
-/** 储存 */
+/** 储存代码 */
 export const gitStashIn = async(win: BrowserWindow, channel: string, cwd: string) => {
     const git = simpleGit(cwd)
+    let isStash = false
     try {
         const status = await git.status()
         if (status.files.length > 0) {
             // 本地有未提交修改 → 储藏
             await git.stash()
             win.webContents.send(channel, '本地修改已储藏')
+            isStash = true
         }
     } catch (err) {
         console.error('储存失败:', err)
         win.webContents.send(channel, '储存失败')
     }
+    return { 
+        /** 是否已储存当前代码 */
+        isStash
+    }
 }
 
-/** 应用储存 */
+/** 应用上一次的储存储存 */
 export const gitStashOut = async(win: BrowserWindow, channel: string, cwd: string) => {
     const git = simpleGit(cwd)
     try {
@@ -101,14 +107,14 @@ export const gitMerge = async(win: BrowserWindow, cwds: string[], origin: string
         win.webContents.send('gitMerge', '----------------------------------------')
         win.webContents.send('gitMerge', `${cwd}`)
         const oldBranch = await getCurrentBranch(cwd)
-        await gitStashIn(win, 'gitMerge', cwd)
+        const { isStash } = await gitStashIn(win, 'gitMerge', cwd)
         await switchOrCreateBranch(win, 'gitMerge', cwd, origin)
         await spawnCommand(win, 'gitMerge', 'git', ['pull', 'origin', origin, '--progress'], { cwd })
         await switchOrCreateBranch(win, 'gitMerge', cwd, target)
         await spawnCommand(win, 'gitMerge', 'git', ['reset', '--hard', origin], { cwd })
         await spawnCommand(win, 'gitMerge', 'git', ['push', 'origin', target, '-f', '--progress'], { cwd })
         await switchOrCreateBranch(win, 'gitMerge', cwd, oldBranch)
-        await gitStashOut(win, 'gitMerge', cwd)
+        isStash && await gitStashOut(win, 'gitMerge', cwd)
         win.webContents.send('gitMerge', '----------------------------------------')
     }
 }

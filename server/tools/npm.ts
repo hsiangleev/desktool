@@ -12,7 +12,7 @@ export const updatePackage = async(win: BrowserWindow, dirList: string[], packag
         win.webContents.send('updatePackage', '✅ ----------------------------------------')
         win.webContents.send('updatePackage', `${cwd}`)
         const oldBranch = await getCurrentBranch(cwd)
-        await gitStashIn(win, 'updatePackage', cwd)
+        const { isStash } = await gitStashIn(win, 'updatePackage', cwd)
         await switchOrCreateBranch(win, 'updatePackage', cwd, branch)
         await spawnCommand(win, 'updatePackage', 'git', ['pull', 'origin', branch, '--progress'], { cwd })
         // 安装包
@@ -34,7 +34,7 @@ export const updatePackage = async(win: BrowserWindow, dirList: string[], packag
         await spawnCommand(win, 'updatePackage', 'git', ['push', 'origin', branch], { cwd })
         // 切回初始状态
         await switchOrCreateBranch(win, 'updatePackage', cwd, oldBranch)
-        await gitStashOut(win, 'updatePackage', cwd)
+        isStash && await gitStashOut(win, 'updatePackage', cwd)
         win.webContents.send('updatePackage', '✅ ----------------------------------------')
     }
 }
