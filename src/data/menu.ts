@@ -118,7 +118,7 @@ const menu: IMenu[] = [
     {
         id: `${++index}`,
         path: '/git',
-        meta: { icon: 'bi:git', menuName: 'git操作', menuType: 1 },
+        meta: { icon: 'bi:git', menuName: 'git及批量操作', menuType: 1 },
         children: [
             {
                 id: `${++index}`,

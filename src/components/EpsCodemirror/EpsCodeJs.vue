@@ -7,7 +7,7 @@
         :placeholder='placeholder'
         :height='height'
         :width='width'
-        :is-readonly='isReadonly'
+        :is-readonly='props.isReadonly'
         :line-numbers='lineNumbers'
     />
 </template>
@@ -23,7 +23,7 @@ export interface IProps {
     isReadonly?: boolean
     lineNumbers?: boolean
 }
-withDefaults(defineProps<IProps>(), {
+const props = withDefaults(defineProps<IProps>(), {
     lineNumbers: true
 })
 const modelValue = defineModel<string>({})
