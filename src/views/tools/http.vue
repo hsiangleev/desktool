@@ -98,43 +98,45 @@ window.electronAPI.on('fetchFile', (_, res) => {
 const submitForm = async(formEl: FormInstance | undefined) => {
     if(!await epsFormSubmit(formEl)) return
     const { close } = await epsLayerLoading()
-    let data = {}
-    let params = {}
-    let headers = {}
     try {
-        data = JSON.parse(ruleForm.data || '{}')
-    } catch {}
-    try {
-        params = JSON.parse(ruleForm.params || '{}')
-    } catch {}
-    try {
-        headers = JSON.parse(ruleForm.headers || '{}')
-    } catch {}
-    responseData.value = ''
+        let data = {}
+        let params = {}
+        let headers = {}
+        try {
+            data = JSON.parse(ruleForm.data || '{}')
+        } catch {}
+        try {
+            params = JSON.parse(ruleForm.params || '{}')
+        } catch {}
+        try {
+            headers = JSON.parse(ruleForm.headers || '{}')
+        } catch {}
+        responseData.value = ''
 
-    const file = await transformFile()
-    const res = await window.electronAPI.invoke('fetch', {
-        url: ruleForm.url,
-        method: ruleForm.method,
-        headers,
-        params,
-        data,
-        file
-    })
-    close()
-    try {
-        // 返回数组则代表是文件上传
-        if(Array.isArray(res)) return
-        if(res.status >= 400) {
-            responseData.value = `状态码：${res.status}，状态信息：${res.statusText || res.data}`
-        }else if(typeof res.data == 'string') {
-            responseData.value = res.data.replace(/\n/,'\r\n')
-        }else{
-            responseData.value = JSON.stringify(res.data, null, 4)
+        const file = await transformFile()
+        const res = await window.electronAPI.invoke('fetch', {
+            url: ruleForm.url,
+            method: ruleForm.method,
+            headers,
+            params,
+            data,
+            file
+        })
+        try {
+            // 返回数组则代表是文件上传
+            if(Array.isArray(res)) return void close()
+            if(res.status >= 400) {
+                responseData.value = `状态码：${res.status}，状态信息：${res.statusText || res.data}`
+            }else if(typeof res.data == 'string') {
+                responseData.value = res.data.replace(/\n/,'\r\n')
+            }else{
+                responseData.value = JSON.stringify(res.data, null, 4)
+            }
+        } catch {
+            responseData.value = JSON.stringify(res, null, 4)
         }
-    } catch {
-        responseData.value = JSON.stringify(res, null, 4)
-    }
+    } catch {}
+    close()
 }
 
 const resetForm = (formEl: FormInstance | undefined) => {

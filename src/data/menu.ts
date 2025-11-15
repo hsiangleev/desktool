@@ -68,6 +68,12 @@ const menu: IMenu[] = [
                 path: '/markdown/pdf',
                 component: routerMenu['markdown/pdf'],
                 meta: { menuName: 'pdfjs', menuType: 2 }
+            },
+            {
+                id: `${++index}`,
+                path: '/markdown/mind',
+                component: routerMenu['markdown/mind'],
+                meta: { menuName: '思维导图', menuType: 2 }
             }
         ]
     },

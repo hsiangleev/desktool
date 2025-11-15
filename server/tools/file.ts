@@ -189,3 +189,28 @@ export const startCommand = async(win: BrowserWindow, command: string, stopId: s
         return { code: -1, msg: `${error}` }
     }
 }
+
+export const readDirTreeMind = (dirPath: string, obj:{index: number}) => {
+    obj.index++
+    if(obj.index > 500) return
+    const stats = fs.statSync(dirPath)
+    const info = {
+        data: {
+            text: `${path.basename(dirPath)}`,
+            generalization: [],
+            expand: true,
+            uid: crypto.randomUUID(),
+            isActive: false
+        },
+        children: []
+    }
+    if (stats.isDirectory()) {
+        info.children = fs.readdirSync(dirPath).map(child => {
+            if(obj.index > 500) return
+            return readDirTreeMind(path.join(dirPath, child), obj)
+        })
+            .filter(v => !!v) as any
+    }
+
+    return info
+}

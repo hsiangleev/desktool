@@ -1,5 +1,5 @@
 import { BrowserWindow, ipcMain } from 'electron'
-import { selFileImg, openMdFile, saveMdFile, sellectDir, uploadCloudflareImg, copyFileImgTime, saveImgByClipboard, portAgentList, portAgentAdd, portAgentDel, getServerName, startServerName, stopServerName, startCommand } from '~/tools/file'
+import { selFileImg, openMdFile, saveMdFile, sellectDir, uploadCloudflareImg, copyFileImgTime, saveImgByClipboard, portAgentList, portAgentAdd, portAgentDel, getServerName, startServerName, stopServerName, startCommand, readDirTreeMind } from '~/tools/file'
 import { gitClone, gitMerge } from '~/tools/git'
 import { processStop } from '~/tools/command'
 import { updatePackage } from '~/tools/npm'
@@ -104,5 +104,13 @@ export const useFile = (win: BrowserWindow) => {
     ipcMain.handle('startCommand', async(_, res) => {
         const { command, stopId, cwd } = res
         return startCommand(win, command, stopId, cwd)
+    })
+    ipcMain.handle('readDirTreeMind', async(_, dir) => {
+        const obj = { index: 0 }
+        const data = readDirTreeMind(dir, obj)
+        return {
+            data,
+            index: obj.index
+        }
     })
 }

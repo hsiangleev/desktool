@@ -17,3 +17,9 @@ declare interface Window {
         send: (channel: string, ...args: any[]) => void
     }
 }
+
+declare module 'simple-mind-map/src/plugins/Export.js'
+declare module 'simple-mind-map/src/parse/xmind.js'
+declare module 'simple-mind-map/src/plugins/ExportXMind.js'
+declare module 'simple-mind-map/src/plugins/ExportPDF.js'
+declare module 'simple-mind-map/src/parse/markdown.js'

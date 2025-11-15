@@ -26,14 +26,18 @@ const form = reactive({
 
 const genGuid = async() => {
     const { close } = await epsLayerLoading()
-    form.guid = await window.electronAPI.invoke('guid')
+    try {
+        form.guid = await window.electronAPI.invoke('guid')
+    } catch {}
     close()
 }
 
 const testTelnet = async() => {
     const { close } = await epsLayerLoading()
-    const { type, msg } = await window.electronAPI.invoke('telnet', { host: form.telnetIp, port: form.telnetPort })
-    epsLayerMsg(msg, type)
+    try {
+        const { type, msg } = await window.electronAPI.invoke('telnet', { host: form.telnetIp, port: form.telnetPort })
+        epsLayerMsg(msg, type)
+    } catch {}
     close()
 }
 </script>

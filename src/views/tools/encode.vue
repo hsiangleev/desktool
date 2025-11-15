@@ -136,13 +136,17 @@ const form = reactive({
 
 const base64Encode = async() => {
     const { close } = await epsLayerLoading()
-    form.base64Decode = await window.electronAPI.invoke('base64Encode', form.base64Encode)
+    try {
+        form.base64Decode = await window.electronAPI.invoke('base64Encode', form.base64Encode)
+    } catch {}
     close()
 }
 
 const base64Decode = async() => {
     const { close } = await epsLayerLoading()
-    form.base64Encode = await window.electronAPI.invoke('base64Decode', form.base64Decode)
+    try {
+        form.base64Encode = await window.electronAPI.invoke('base64Decode', form.base64Decode)
+    } catch {}
     close()
 }
 
@@ -156,24 +160,30 @@ const urlDecode = async() => {
 
 const genKey = async() => {
     const { close } = await epsLayerLoading()
-    const crypt = new JSEncrypt({ default_key_size: form.keyLen })
-    form.rsaPrivate = crypt.getPrivateKey()
-    form.rsaPublic = crypt.getPublicKey()
+    try {
+        const crypt = new JSEncrypt({ default_key_size: form.keyLen })
+        form.rsaPrivate = crypt.getPrivateKey()
+        form.rsaPublic = crypt.getPublicKey()
+    } catch {}
     close()
 }
 const rsaEncode = async() => {
     const { close } = await epsLayerLoading()
-    const crypt = new JSEncrypt()
-    crypt.setPublicKey(form.rsaPublic)
-    form.rsaDecode = crypt.encrypt(form.rsaEncode) as string
+    try {
+        const crypt = new JSEncrypt()
+        crypt.setPublicKey(form.rsaPublic)
+        form.rsaDecode = crypt.encrypt(form.rsaEncode) as string
+    } catch {}
     close()
 }
 
 const rsaDecode = async() => {
     const { close } = await epsLayerLoading()
-    const crypt = new JSEncrypt()
-    crypt.setPrivateKey(form.rsaPrivate)
-    form.rsaEncode = crypt.decrypt(form.rsaDecode) as string
+    try {
+        const crypt = new JSEncrypt()
+        crypt.setPrivateKey(form.rsaPrivate)
+        form.rsaEncode = crypt.decrypt(form.rsaDecode) as string
+    } catch {}
     close()
 }
 
