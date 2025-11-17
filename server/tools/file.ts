@@ -190,11 +190,11 @@ export const startCommand = async(win: BrowserWindow, command: string, stopId: s
     }
 }
 
-export const readDirTreeMind = (dirPath: string, obj:{index: number}) => {
-    obj.index++
-    if(obj.index > 500) return
-    const stats = fs.statSync(dirPath)
-    const info = {
+/** 广度优先遍历文件夹 */
+export const readDirTreeMind = (dirPath: string, limit = 500) => {
+    let count = 0
+    // 构造根节点
+    const root = {
         data: {
             text: `${path.basename(dirPath)}`,
             generalization: [],
@@ -203,14 +203,52 @@ export const readDirTreeMind = (dirPath: string, obj:{index: number}) => {
             isActive: false
         },
         children: []
-    }
-    if (stats.isDirectory()) {
-        info.children = fs.readdirSync(dirPath).map(child => {
-            if(obj.index > 500) return
-            return readDirTreeMind(path.join(dirPath, child), obj)
-        })
-            .filter(v => !!v) as any
+    } as Record<string, any>
+
+    // 队列：存储 { node, dirPath }
+    const queue = [{ node: root, dirPath: dirPath }]
+
+    while (queue.length > 0) {
+        const { node, dirPath } = queue.shift()!
+
+        // 超过限制就停止构建
+        if (count >= limit) {
+            console.log('节点数量达到限制，中止遍历')
+            break
+        }
+
+        // 获取此目录下的所有文件
+        const items = fs.readdirSync(dirPath)
+
+        for (const item of items) {
+            if (count >= limit) break // 位置非常重要，避免继续加入节点
+
+            const fullPath = path.join(dirPath, item)
+            const stat = fs.statSync(fullPath)
+
+            const child = {
+                data: {
+                    text: `${path.basename(fullPath)}`,
+                    generalization: [],
+                    expand: true,
+                    uid: crypto.randomUUID(),
+                    isActive: false
+                },
+                children: []
+            }
+
+            node.children.push(child)
+            count++
+
+            // 如果是文件夹，加入队列继续 BFS
+            if (stat.isDirectory()) {
+                queue.push({ node: child, dirPath: fullPath })
+            }
+        }
     }
 
-    return info
+    return {
+        data: root,
+        index: count
+    }
 }

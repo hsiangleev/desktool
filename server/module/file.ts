@@ -106,11 +106,6 @@ export const useFile = (win: BrowserWindow) => {
         return startCommand(win, command, stopId, cwd)
     })
     ipcMain.handle('readDirTreeMind', async(_, dir) => {
-        const obj = { index: 0 }
-        const data = readDirTreeMind(dir, obj)
-        return {
-            data,
-            index: obj.index
-        }
+        return readDirTreeMind(dir)
     })
 }
