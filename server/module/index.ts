@@ -1,6 +1,7 @@
 import { useHttp } from './http'
 import { useFile } from './file'
 import { useEvent } from './event'
+import { useOs } from './os'
 import type { BrowserWindow } from 'electron'
 import { processStopAll } from '~/tools/command'
 import { useWebsocketClose } from '~/tools/websocket'
@@ -10,6 +11,7 @@ export const useModule = (win: BrowserWindow) => {
     useEvent(win)
     useHttp(win)
     useFile(win)
+    useOs(win)
 }
 
 export const useProcessStop = async() => {
