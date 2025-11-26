@@ -1,7 +1,8 @@
 import { ipcMain } from 'electron'
 import { 
     system, cpu, currentLoad, mem, graphics, osInfo, diskLayout, cpuTemperature,
-    usb, printer, audio, networkInterfaces, wifiNetworks, bluetoothDevices, memLayout
+    usb, printer, audio, networkInterfaces, wifiNetworks, bluetoothDevices, memLayout,
+    fsSize
 } from 'systeminformation'
 
 export const useOs = () => {
@@ -28,6 +29,9 @@ export const useOs = () => {
     })
     ipcMain.handle('getDiskLayout', async() => {
         return await diskLayout()
+    })
+    ipcMain.handle('getFsSize', async() => {
+        return await fsSize()
     })
     ipcMain.handle('getCpuTemperature', async() => {
         return await cpuTemperature()

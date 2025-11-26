@@ -38,21 +38,34 @@
     >
         <el-descriptions-item><template #label>已使用</template>{{ epsCountFileSize(getMem?.used) }}</el-descriptions-item>
         <el-descriptions-item><template #label>空闲</template>{{ epsCountFileSize(getMem?.free) }}</el-descriptions-item>
-        <el-descriptions-item><template #label>总大小</template>{{ epsCountFileSize(getMem?.total) }}</el-descriptions-item>
-    </el-descriptions>
-    
-    <el-descriptions
-        class='mt-2'
-        title='内存厂商'
-        :column='4'
-        size='small'
-        border
-    >
+        <el-descriptions-item :span='2'><template #label>总大小</template>{{ epsCountFileSize(getMem?.total) }}</el-descriptions-item>
+        
         <template v-for='v,i in getMemLayout' :key='`${v.manufacturer}-${i}`'>
             <el-descriptions-item><template #label>制造商</template>{{ v.manufacturer }}</el-descriptions-item>
             <el-descriptions-item><template #label>大小</template>{{ epsCountFileSize(v.size) }}</el-descriptions-item>
             <el-descriptions-item><template #label>类型</template>{{ v.type }}</el-descriptions-item>
             <el-descriptions-item><template #label>时钟频率</template>{{ v.clockSpeed }}</el-descriptions-item>
+        </template>
+    </el-descriptions>
+    
+    <el-descriptions
+        class='mt-2'
+        :title='diskUsed'
+        :column='4'
+        size='small'
+        border
+    >
+        <template v-for='v,i in getDiskLayout' :key='`${v.name}-${i}`'>
+            <el-descriptions-item><template #label>制造商</template>{{ v?.vendor }}</el-descriptions-item>
+            <el-descriptions-item><template #label>名称</template>{{ v?.name }}</el-descriptions-item>
+            <el-descriptions-item><template #label>总大小</template>{{ epsCountFileSize(v?.size) }}</el-descriptions-item>
+            <el-descriptions-item><template #label>接口类型</template>{{ v?.interfaceType }}</el-descriptions-item>
+        </template>
+        <template v-for='val,index in getFsSize' :key='`${val.fs}-${index}`'>
+            <el-descriptions-item><template #label>磁盘</template>{{ val?.fs }}</el-descriptions-item>
+            <el-descriptions-item><template #label>使用率</template>{{ val?.use }}%</el-descriptions-item>
+            <el-descriptions-item><template #label>已使用</template>{{ epsCountFileSize(val?.used) }}</el-descriptions-item>
+            <el-descriptions-item><template #label>大小</template>{{ epsCountFileSize(val?.size) }}</el-descriptions-item>
         </template>
     </el-descriptions>
     
@@ -72,7 +85,7 @@
     </el-descriptions>
 </template>
 <script setup lang='ts'>
-import { type Systeminformation } from 'systeminformation'
+import type { Systeminformation } from 'systeminformation'
 
 const timer = ref<NodeJS.Timeout[]>([])
 const getSystem = ref<Systeminformation.SystemData>()
@@ -81,6 +94,8 @@ const currentLoad = ref<Systeminformation.CurrentLoadData>()
 const getMem = ref<Systeminformation.MemData>()
 const getMemLayout = ref<Systeminformation.MemLayoutData[]>()
 const getGraphics = ref<Systeminformation.GraphicsData>()
+const getFsSize = ref<Systeminformation.FsSizeData[]>()
+const getDiskLayout = ref<Systeminformation.DiskLayoutData[]>()
 onMounted(() => {
     window.electronAPI.invoke('getSystem').then(res => getSystem.value = res)
     window.electronAPI.invoke('getCpu').then(res => cpuInfo.value = res)
@@ -88,7 +103,14 @@ onMounted(() => {
     timer.value.push(setInterval(() => window.electronAPI.invoke('getCurrentLoad').then(res => currentLoad.value = res), 3000))
     timer.value.push(setInterval(() => window.electronAPI.invoke('getMem').then(res => getMem.value = res), 3000))
     window.electronAPI.invoke('getGraphics').then(res => getGraphics.value = res)
-    
+    window.electronAPI.invoke('getFsSize').then(res => getFsSize.value = res)
+    window.electronAPI.invoke('getDiskLayout').then(res => getDiskLayout.value = res)
+})
+
+const diskUsed = computed(() => {
+    let q = (getFsSize.value ?? []).map(v => v.used).reduce((acc, v) => acc + v, 0)
+    let w = (getDiskLayout.value ?? []).map(v => v.size).reduce((acc, v) => acc + v, 0)
+    return `磁盘信息（${(q / w * 100).toFixed(2)}%）`
 })
 
 onUnmounted(() => {

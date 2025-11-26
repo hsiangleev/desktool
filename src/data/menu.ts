@@ -123,7 +123,7 @@ const menu: IMenu[] = [
                 id: `${++index}`,
                 path: '/server/osServer',
                 component: routerMenu['server/osServer'],
-                meta: { menuName: '系统监控', menuType: 2 }
+                meta: { menuName: '系统硬件查看', menuType: 2 }
             }
         ]
     },
