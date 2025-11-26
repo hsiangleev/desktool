@@ -1,14 +1,13 @@
 <template>
     <el-descriptions
         title='品牌信息'
-        :column='4'
+        :column='3'
         size='small'
         border
     >
         <el-descriptions-item><template #label>制造商</template>{{ getSystem?.manufacturer }}</el-descriptions-item>
         <el-descriptions-item><template #label>型号</template>{{ getSystem?.model }}</el-descriptions-item>
         <el-descriptions-item><template #label>版本</template>{{ getSystem?.version }}</el-descriptions-item>
-        <el-descriptions-item><template #label>虚拟机</template>{{ getSystem?.virtual }}</el-descriptions-item>
     </el-descriptions>
     
     <el-descriptions
@@ -83,6 +82,42 @@
             <el-descriptions-item><template #label>显存大小</template>{{ epsCountFileSize((v?.vram ?? 0) * 1024 * 1024) }}</el-descriptions-item>
         </template>
     </el-descriptions>
+    
+    <el-descriptions
+        class='mt-2'
+        title='网络'
+        :column='5'
+        size='small'
+        border
+    >
+        <template v-for='v,i in getNetworkInterfaces' :key='`${v.ifaceName}-${i}`'>
+            <el-descriptions-item><template #label>网卡</template>{{ v?.ifaceName }}</el-descriptions-item>
+            <el-descriptions-item><template #label>ipv4</template><el-text size='small' :type='v.default ? "success" : ""'>{{ v?.ip4 }}</el-text></el-descriptions-item>
+            <el-descriptions-item><template #label>子网</template>{{ v?.ip4subnet }}</el-descriptions-item>
+            <el-descriptions-item><template #label>mac</template>{{ v?.mac }}</el-descriptions-item>
+            <el-descriptions-item><template #label>虚拟</template><el-tag size='small' :type='v?.virtual ? "primary" : "info"'>{{ v?.virtual ? "是" : "否" }}</el-tag></el-descriptions-item>
+        </template>
+    </el-descriptions>
+    
+    <el-descriptions
+        class='mt-2'
+        :title='`电池信息（${(getBattery?.percent ?? 0)?.toFixed(2)}%）`'
+        :column='4'
+        size='small'
+        border
+    >
+        <el-descriptions-item><template #label>电池</template><el-tag size='small' :type='getBattery?.hasBattery ? "primary" : "info"'>{{ getBattery?.hasBattery ? "有电池" : "没有电池" }}</el-tag></el-descriptions-item>
+        <el-descriptions-item><template #label>制造者</template>{{ getBattery?.manufacturer }}</el-descriptions-item>
+        <el-descriptions-item><template #label>是否在充电</template><el-tag size='small' :type='getBattery?.isCharging ? "primary" : "info"'>{{ getBattery?.isCharging ? "是" : "否" }}</el-tag></el-descriptions-item>
+        <el-descriptions-item><template #label>充能次数</template>{{ getBattery?.cycleCount }}</el-descriptions-item>
+        <el-descriptions-item><template #label>设计容量</template>{{ getBattery?.maxCapacity ?? 0 }}mWh</el-descriptions-item>
+        <el-descriptions-item><template #label>最大容量</template>{{ getBattery?.currentCapacity ?? 0 }}mWh</el-descriptions-item>
+        <el-descriptions-item><template #label>当前容量</template>{{ getBattery?.capacityUnit ?? 0 }}mWh</el-descriptions-item>
+        <el-descriptions-item><template #label>电压</template>{{ getBattery?.voltage ?? 0 }}v</el-descriptions-item>
+        <el-descriptions-item><template #label>剩余时间</template>{{ getBattery?.timeRemaining ?? 0 }}分钟</el-descriptions-item>
+        <el-descriptions-item><template #label>类型</template>{{ getBattery?.type }}</el-descriptions-item>
+        <el-descriptions-item><template #label>序列号</template>{{ getBattery?.serial }}</el-descriptions-item>
+    </el-descriptions>
 </template>
 <script setup lang='ts'>
 import type { Systeminformation } from 'systeminformation'
@@ -96,6 +131,8 @@ const getMemLayout = ref<Systeminformation.MemLayoutData[]>()
 const getGraphics = ref<Systeminformation.GraphicsData>()
 const getFsSize = ref<Systeminformation.FsSizeData[]>()
 const getDiskLayout = ref<Systeminformation.DiskLayoutData[]>()
+const getNetworkInterfaces = ref<Systeminformation.NetworkInterfacesData[]>()
+const getBattery = ref<Systeminformation.BatteryData>()
 onMounted(() => {
     window.electronAPI.invoke('getSystem').then(res => getSystem.value = res)
     window.electronAPI.invoke('getCpu').then(res => cpuInfo.value = res)
@@ -105,7 +142,11 @@ onMounted(() => {
     window.electronAPI.invoke('getGraphics').then(res => getGraphics.value = res)
     window.electronAPI.invoke('getFsSize').then(res => getFsSize.value = res)
     window.electronAPI.invoke('getDiskLayout').then(res => getDiskLayout.value = res)
+    window.electronAPI.invoke('getNetworkInterfaces').then(res => getNetworkInterfaces.value = res)
+    window.electronAPI.invoke('getBattery').then(res => getBattery.value = res)
 })
+
+console.log(getBattery)
 
 const diskUsed = computed(() => {
     let q = (getFsSize.value ?? []).map(v => v.used).reduce((acc, v) => acc + v, 0)

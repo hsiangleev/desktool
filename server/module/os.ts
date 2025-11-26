@@ -2,7 +2,7 @@ import { ipcMain } from 'electron'
 import { 
     system, cpu, currentLoad, mem, graphics, osInfo, diskLayout, cpuTemperature,
     usb, printer, audio, networkInterfaces, wifiNetworks, bluetoothDevices, memLayout,
-    fsSize
+    fsSize, battery
 } from 'systeminformation'
 
 export const useOs = () => {
@@ -53,5 +53,8 @@ export const useOs = () => {
     })
     ipcMain.handle('getBluetoothDevices', async() => {
         return await bluetoothDevices()
+    })
+    ipcMain.handle('getBattery', async() => {
+        return await battery()
     })
 }
