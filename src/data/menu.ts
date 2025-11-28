@@ -22,6 +22,12 @@ const menu: IMenu[] = [
         children: [
             {
                 id: `${++index}`,
+                path: '/server/osServer',
+                component: routerMenu['server/osServer'],
+                meta: { menuName: '系统硬件', menuType: 2 }
+            },
+            {
+                id: `${++index}`,
                 path: '/tools/http',
                 component: routerMenu['tools/http'],
                 meta: { menuName: 'http请求', menuType: 2 }
@@ -118,12 +124,6 @@ const menu: IMenu[] = [
                 path: '/server/httpServe',
                 component: routerMenu['server/httpServe'],
                 meta: { menuName: '静态服务器', menuType: 2 }
-            },
-            {
-                id: `${++index}`,
-                path: '/server/osServer',
-                component: routerMenu['server/osServer'],
-                meta: { menuName: '系统硬件查看', menuType: 2 }
             }
         ]
     },

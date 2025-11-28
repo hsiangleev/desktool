@@ -11,7 +11,7 @@ export const useModule = (win: BrowserWindow) => {
     useEvent(win)
     useHttp(win)
     useFile(win)
-    useOs(win)
+    useOs()
 }
 
 export const useProcessStop = async() => {
