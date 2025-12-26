@@ -3,7 +3,7 @@
         <div class='mb-2'>
             <el-button type='primary' plain @click='add'>添加</el-button>
         </div>
-        <el-table ref='tableRef' :data='tableData' border class='port-table'>
+        <el-table :data='tableData' border class='port-table'>
             <el-table-column type='index' width='50' />
             <el-table-column prop='serverName' label='服务名称' />
             <el-table-column prop='status' label='状态'>
@@ -33,7 +33,6 @@ class IPortAgent {
 const tableData = ref<IPortAgent[]>([])
 const serverList = ref(getLocal<string[]>('serverManager') ?? [])
 const codeRef = useTemplateRef('codeRef')
-const tableRef = ref()
 const matchServer = (str: string) => {
     const nameMatch = str.match(/SERVICE_NAME:\s+(\S+)/)
     const stateMatch = str.match(/STATE\s*:\s*(\d+)\s+(\w+)/)

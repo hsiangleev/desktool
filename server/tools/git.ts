@@ -2,6 +2,8 @@ import type { BrowserWindow } from 'electron'
 import path from 'path'
 import simpleGit from 'simple-git'
 import { spawnCommand } from './command'
+import { useRequest } from './http'
+import { loadConfigFile } from './tools'
 
 /** 储存代码 */
 export const gitStashIn = async(win: BrowserWindow, channel: string, cwd: string) => {
@@ -117,4 +119,26 @@ export const gitMerge = async(win: BrowserWindow, cwds: string[], origin: string
         isStash && await gitStashOut(win, 'gitMerge', cwd)
         win.webContents.send('gitMerge', '----------------------------------------')
     }
+}
+
+export const useGitlabCicd = async(data: {projectName: string, projectId: string, branch: string, token: string}[]) => {
+    const { config } = loadConfigFile()
+    const msg = await Promise.all(data.map(v => new Promise(resolve => {
+        useRequest({ 
+            url: `${config.gitlabUrl}/api/v4/projects/${v.projectId}/trigger/pipeline`,
+            method: 'post',
+            data: {
+                token: v.token,
+                ref: v.branch
+            }
+        }).then(d => {
+            const s = `----------------------------------------
+当前项目：${v.projectName}
+${JSON.stringify(d.data, null, 4)}
+----------------------------------------`
+            resolve(s)
+        })
+    })))
+    
+    return msg.join('\r\n')
 }

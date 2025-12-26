@@ -4,6 +4,7 @@ import { updateGitlabFile, useFetch } from '~/tools/http'
 import crypto from 'crypto'
 import { useWebsocket, useWebsocketClose } from '~/tools/websocket'
 import { useHttpServe, useHttpServeClose } from '~/tools/http'
+import { useGitlabCicd } from '~/tools/git'
 
 export const useHttp = (win: BrowserWindow) => {
     ipcMain.handle('appInfo', async() => {
@@ -58,5 +59,9 @@ export const useHttp = (win: BrowserWindow) => {
     ipcMain.handle('updateGitlabFile', async(_, req) => {
         const { rootPath, project, projectUrl, filePath, branch } = req
         return updateGitlabFile(rootPath, project, projectUrl, filePath, branch)
+    })
+
+    ipcMain.handle('gitlabCicd', async(_, req) => {
+        return useGitlabCicd(req)
     })
 }

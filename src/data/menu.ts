@@ -155,6 +155,12 @@ const menu: IMenu[] = [
                 path: '/git/updateGitlabFile',
                 component: routerMenu['git/updateGitlabFile'],
                 meta: { menuName: '同步gitlab文件', menuType: 2 }
+            },
+            {
+                id: `${++index}`,
+                path: '/git/cicd',
+                component: routerMenu['git/cicd'],
+                meta: { menuName: '执行gitlab计划', menuType: 2 }
             }
         ]
     },
