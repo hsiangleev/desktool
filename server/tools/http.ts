@@ -151,3 +151,15 @@ export const useFetch = async(win: BrowserWindow, channel: string, req: any) => 
         return { data: error.toString() }
     }
 }
+
+export const useGetIp = async() => {
+    let ipv4,ipv6
+    try {
+        ipv4 = await ((await fetch('http://4.ipw.cn/')).text())
+        ipv6 = await ((await fetch('http://6.ipw.cn/')).text())
+    } catch {}
+    return {
+        ipv4, 
+        ipv6
+    }
+}

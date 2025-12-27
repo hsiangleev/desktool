@@ -22,8 +22,8 @@ const menu: IMenu[] = [
         children: [
             {
                 id: `${++index}`,
-                path: '/server/osServer',
-                component: routerMenu['server/osServer'],
+                path: '/tools/osServer',
+                component: routerMenu['tools/osServer'],
                 meta: { menuName: '系统硬件', menuType: 2 }
             },
             {
