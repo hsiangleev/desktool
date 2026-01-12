@@ -1,6 +1,6 @@
 ## 简介
 
-使用vite + vue3 + typescript + electron编写的桌面管理工具
+使用vite + vue3 + typescript + electron编写的桌面管理工具，[下载地址](https://github.com/hsiangleev/desktool/releases)。
 
 ## 本地开发调试
 
