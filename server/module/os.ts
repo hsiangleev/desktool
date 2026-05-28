@@ -4,38 +4,47 @@ import {
     usb, printer, audio, networkInterfaces, wifiNetworks, bluetoothDevices, memLayout,
     fsSize
 } from 'systeminformation'
+import { systemCache } from './cache'
 
 export const useOs = () => {
+    // 静态数据 - 使用缓存（5分钟）
     ipcMain.handle('getSystem', async() => {
-        return await system()
+        return systemCache.get('system', system)
     })
     ipcMain.handle('getCpu', async() => {
-        return await cpu()
-    })
-    ipcMain.handle('getCurrentLoad', async() => {
-        return await currentLoad()
-    })
-    ipcMain.handle('getMem', async() => {
-        return await mem()
+        return systemCache.get('cpu', cpu)
     })
     ipcMain.handle('getMemLayout', async() => {
-        return await memLayout()
+        return systemCache.get('memLayout', memLayout)
     })
     ipcMain.handle('getOsInfo', async() => {
-        return await osInfo()
+        return systemCache.get('osInfo', osInfo)
     })
     ipcMain.handle('getGraphics', async() => {
-        return await graphics()
+        return systemCache.get('graphics', graphics)
     })
     ipcMain.handle('getDiskLayout', async() => {
-        return await diskLayout()
+        return systemCache.get('diskLayout', diskLayout)
+    })
+    ipcMain.handle('getNetworkInterfaces', async() => {
+        return systemCache.get('networkInterfaces', networkInterfaces)
+    })
+
+    // 动态数据 - 使用缓存（2秒）
+    ipcMain.handle('getCurrentLoad', async() => {
+        return systemCache.get('currentLoad', currentLoad)
+    })
+    ipcMain.handle('getMem', async() => {
+        return systemCache.get('mem', mem)
     })
     ipcMain.handle('getFsSize', async() => {
-        return await fsSize()
+        return systemCache.get('fsSize', fsSize)
     })
     ipcMain.handle('getCpuTemperature', async() => {
-        return await cpuTemperature()
+        return systemCache.get('cpuTemperature', cpuTemperature)
     })
+
+    // 不常用数据 - 无缓存
     ipcMain.handle('getUsb', async() => {
         return await usb()
     })
@@ -45,13 +54,16 @@ export const useOs = () => {
     ipcMain.handle('getAudio', async() => {
         return await audio()
     })
-    ipcMain.handle('getNetworkInterfaces', async() => {
-        return await networkInterfaces()
-    })
     ipcMain.handle('getWifiNetworks', async() => {
         return await wifiNetworks()
     })
     ipcMain.handle('getBluetoothDevices', async() => {
         return await bluetoothDevices()
+    })
+
+    // 清除缓存的方法
+    ipcMain.handle('clearSystemCache', async(_event, key?: string) => {
+        systemCache.clear(key)
+        return true
     })
 }

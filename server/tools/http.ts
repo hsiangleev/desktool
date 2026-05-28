@@ -153,10 +153,25 @@ export const useFetch = async(win: BrowserWindow, channel: string, req: any) => 
 }
 
 export const useGetIp = async() => {
-    let ipv4,ipv6
+    let ipv4, ipv6
     try {
-        ipv4 = await ((await fetch('http://4.ipw.cn/')).text())
-        ipv6 = await ((await fetch('http://6.ipw.cn/')).text())
+        // 使用国内可用的 IP 查询服务
+        const [ipv4Res, ipv6Res] = await Promise.allSettled([
+            axios.get('https://myip.ipip.net', { 
+                timeout: 5000,
+                responseType: 'text'
+            }),
+            axios.get('https://v6.ident.me', { 
+                timeout: 5000,
+                responseType: 'text'
+            })
+        ])
+        // 解析 ipip.net 返回格式: "当前 IP：xxx 来自于：xxx"
+        if (ipv4Res.status === 'fulfilled') {
+            const match = ipv4Res.value.data.match(/当前 IP：([\d.]+)/)
+            ipv4 = match ? match[1] : ipv4Res.value.data.trim()
+        }
+        if (ipv6Res.status === 'fulfilled') ipv6 = ipv6Res.value.data.trim()
     } catch {}
     return {
         ipv4, 

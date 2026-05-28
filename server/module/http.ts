@@ -5,6 +5,7 @@ import crypto from 'crypto'
 import { useWebsocket, useWebsocketClose } from '~/tools/websocket'
 import { useHttpServe, useHttpServeClose } from '~/tools/http'
 import { useGitlabCicd } from '~/tools/git'
+import { systemCache } from './cache'
 
 export const useHttp = (win: BrowserWindow) => {
     ipcMain.handle('appInfo', async() => {
@@ -66,6 +67,6 @@ export const useHttp = (win: BrowserWindow) => {
     })
 
     ipcMain.handle('getIp', async() => {
-        return useGetIp()
+        return systemCache.get('ip', useGetIp)
     })
 }
