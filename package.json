@@ -1,7 +1,7 @@
 {
   "name": "desktool",
   "private": true,
-  "version": "0.0.13",
+  "version": "0.0.14",
   "type": "module",
   "author": {
     "name": "hsianglee",
@@ -10,16 +10,18 @@
   "description": "使用electron和vue3编写的桌面工具",
   "scripts": {
     "dev": "vite",
-    "electron:dev": "unbuild && cross-env NODE_ENV=development electron ./dist/server/main.cjs",
+    "electron:dev": "tsdown && cross-env NODE_ENV=development electron ./dist/server/main.cjs",
     "build:render": "vite build",
-    "build:server": "unbuild",
-    "build": "npm run build:server && npm run build:render && electron-builder -c electron-builder.config.mjs --win",
+    "build:server": "tsdown",
+    "build:clean": "node -e \"const fs=require('fs');fs.rmSync('release',{recursive:true,force:true})\"",
+    "build": "npm-run-all --parallel build:server build:render && npm run build:clean && electron-builder -c electron-builder.config.mjs --win",
     "lint": "stylelint **/*.{css,vue} --fix && eslint . --fix && vue-tsc -b",
     "tsc": "vue-tsc --noEmit",
     "test": "npm-run-all -p lint tsc --continue-on-error"
   },
   "main": "dist/server/main.cjs",
   "dependencies": {
+    "axios": "^1.11.0",
     "element-plus": "^2.11.1",
     "vue": "^3.5.18"
   },
@@ -40,7 +42,6 @@
     "@vitejs/plugin-vue": "^6.0.1",
     "@vue/tsconfig": "^0.7.0",
     "@xterm/xterm": "^5.5.0",
-    "axios": "^1.11.0",
     "codemirror": "^5.65.16",
     "codemirror-editor-vue3": "^2.4.1",
     "cross-env": "^10.0.0",
@@ -68,9 +69,9 @@
     "stylelint-config-standard": "^39.0.0",
     "systeminformation": "^5.27.11",
     "tree-kill": "^1.2.2",
+    "tsdown": "^0.22.0",
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.39.0",
-    "unbuild": "^3.6.1",
     "unocss": "^66.4.1",
     "unplugin-auto-import": "^20.0.0",
     "unplugin-vue-components": "^28.8.0",

@@ -3,10 +3,9 @@
     "compilerOptions": {
         "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
         "types": ["vite/client", "node", "element-plus/global"],
-        "baseUrl": ".",
         "paths": {
-            "@/*": ["src/*"],
-            "~/*": ["server/*"],
+            "@/*": ["./src/*"],
+            "~/*": ["./server/*"],
         },
 
         /* Linting */

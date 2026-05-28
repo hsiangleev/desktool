@@ -22,7 +22,7 @@
     "explorer.fileNesting.enabled": true,
     "explorer.fileNesting.expand": false,
     "explorer.fileNesting.patterns": {
-        "vite.config.ts": "*.env, .env.*, .envrc, env.d.ts, uno.config.*, tsconfig.*,eslint.config.*,stylelint.config.*,.gitignore,build.config.ts, dockerfile, electron-builder.config.*",
+        "vite.config.ts": "*.env, .env.*, .envrc, env.d.ts, uno.config.*, tsconfig.*,eslint.config.*,stylelint.config.*,.gitignore,tsdown.config.ts, dockerfile, electron-builder.config.*",
     },
     "explorer.compactFolders": false,
 }

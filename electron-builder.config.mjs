@@ -8,12 +8,20 @@ export default {
         'dist/renderer/**/*',
         'dist/server/**/*',
         'dist/shared/**/*',
-        'package.json'
+        'package.json',
+        '!**/*.map'
     ],
     win: {
         icon: 'public/favicon.ico',
         target: ['zip', 'nsis']
     },
+    nsis: {
+        allowElevation: false,
+        oneClick: false,
+        perMachine: false,
+        allowToChangeInstallationDirectory: true
+    },
+    compression: 'store',
     publish: {
         provider: 'github',
         owner: 'hsiangleev',
