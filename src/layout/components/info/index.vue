@@ -17,7 +17,10 @@
         width='400'
     >
         <div class='app-info'>
-            <p>version: {{ appInfo.version.app }}</p>
+            <p class='flex items-center'>
+                <span class='mr-2'>version: {{ appInfo.version.app }}</span>
+                <LayoutUpdate />
+            </p>
             <p>electron: {{ appInfo.version.electron }}</p>
             <p>node: {{ appInfo.version.node }}</p>
             <p>chrome: {{ appInfo.version.chrome }}</p>
@@ -28,6 +31,7 @@
 </template>
 <script setup lang='ts'>
 import logo from '/favicon.ico'
+import LayoutUpdate from './update.vue'
 
 const appInfo = ref<IObject>({})
 
