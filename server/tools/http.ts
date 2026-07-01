@@ -4,7 +4,6 @@ import fs from 'fs'
 import axios from 'axios'
 import type { BrowserWindow } from 'electron'
 import FormData from 'form-data'
-import { loadConfigFile } from './tools'
 
 export const useRequest = axios.create({
     timeout: 60000 // 请求超时时间
@@ -68,47 +67,6 @@ export const useHttpServeClose = () => {
             resolve('服务已停止')
         })
     })
-}
-
-export const updateGitlabFile = async(rootPath: string, project: string[], projectUrl: string, filePath: string, branch: string) => {
-    const { config } = loadConfigFile()
-    const { gitlabUrl, gitlabToken } = config
-    if(!gitlabUrl) return {
-        code: -1,
-        msg: '配置文件没有配置gitlabUrl'
-    }
-    if(!gitlabToken) return {
-        code: -1,
-        msg: '配置文件没有配置gitlabToken'
-    }
-    const to2F = (str: string) => str.split('/').join('%2F')
-    const url = `${gitlabUrl}/api/v4/projects/${to2F(projectUrl)}/repository/files/${to2F(filePath)}/raw?ref=${branch}`
-
-    try {
-        const res = await useRequest.get(url, {
-            responseType: 'arraybuffer',
-            headers: { 'PRIVATE-TOKEN': gitlabToken }
-        })
-        if(res.status !== 200) {
-            return { code: -1, msg: `下载失败: ${res.status} ${res.statusText}` }
-        }
-        const arrayBuffer = await res.data
-        let text = Buffer.from(arrayBuffer).toString('utf-8')
-
-        // 把 LF 替换成 CRLF
-        text = text.replace(/\r?\n/g, '\r\n')
-        
-        const msg: string[] = []
-        for (const element of project) {
-            const p = path.resolve(rootPath, element, filePath)
-            fs.mkdirSync(path.dirname(p), { recursive: true })
-            fs.writeFileSync(p, text, 'utf-8')
-            msg.push(`下载成功，文件已保存 ${p}`)
-        }
-        return { code: 0, msg }
-    } catch (err: any) {
-        return { code: -1, msg: `下载失败: ${err.toString()}` }
-    }
 }
 
 export const useFetch = async(win: BrowserWindow, channel: string, req: any) => {

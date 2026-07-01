@@ -129,43 +129,6 @@ const menu: IMenu[] = [
     },
     {
         id: `${++index}`,
-        path: '/git',
-        meta: { icon: 'bi:git', menuName: 'git及批量操作', menuType: 1 },
-        children: [
-            {
-                id: `${++index}`,
-                path: '/git/clone',
-                component: routerMenu['git/clone'],
-                meta: { menuName: '克隆项目', menuType: 2 }
-            },
-            {
-                id: `${++index}`,
-                path: '/git/merge',
-                component: routerMenu['git/merge'],
-                meta: { menuName: '合并分支', menuType: 2 }
-            },
-            {
-                id: `${++index}`,
-                path: '/git/updatePackage',
-                component: routerMenu['git/updatePackage'],
-                meta: { menuName: '更新软件包', menuType: 2 }
-            },
-            {
-                id: `${++index}`,
-                path: '/git/updateGitlabFile',
-                component: routerMenu['git/updateGitlabFile'],
-                meta: { menuName: '同步gitlab文件', menuType: 2 }
-            },
-            {
-                id: `${++index}`,
-                path: '/git/cicd',
-                component: routerMenu['git/cicd'],
-                meta: { menuName: '执行gitlab计划', menuType: 2 }
-            }
-        ]
-    },
-    {
-        id: `${++index}`,
         path: '/windows',
         meta: { icon: 'ant-design:windows-filled', menuName: 'windows工具', menuType: 1 },
         children: [

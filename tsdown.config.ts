@@ -18,7 +18,6 @@ export default defineConfig({
         onlyBundle: [
             'form-data',
             'ws',
-            'simple-git',
             '@kwsites/file-exists',
             '@kwsites/promise-deferred',
             'tree-kill',

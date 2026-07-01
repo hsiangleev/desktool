@@ -1,8 +1,6 @@
 import { BrowserWindow, ipcMain } from 'electron'
 import { selFileImg, openMdFile, saveMdFile, sellectDir, uploadCloudflareImg, copyFileImgTime, saveImgByClipboard, portAgentList, portAgentAdd, portAgentDel, getServerName, startServerName, stopServerName, startCommand, readDirTreeMind } from '~/tools/file'
-import { gitClone, gitMerge } from '~/tools/git'
 import { processStop } from '~/tools/command'
-import { updatePackage } from '~/tools/npm'
 import { loadConfigFile, useReaddir } from '~/tools/tools'
 import { pathToFileURL, fileURLToPath } from 'url'
 import path from 'path'
@@ -42,23 +40,8 @@ export const useFile = (win: BrowserWindow) => {
         return copyFileImgTime(sourcePath, destDir, prefix)
     })
 
-    ipcMain.handle('gitMerge', async(_, res) => {
-        const { dirList, origin, target } = res
-        await gitMerge(win, dirList, origin, target)
-    })
-    
-    ipcMain.handle('gitClone', async(_, res) => {
-        const { repoUrl, targetDir, stopId } = res
-        await gitClone(win, repoUrl, targetDir, stopId)
-    })
-    
     ipcMain.handle('processStop', async(_, res) => {
         return await processStop(res)
-    })
-    
-    ipcMain.handle('updatePackage', async(_, res) => {
-        const { dirList, packages, branch } = res
-        return await updatePackage(win, dirList, packages, branch)
     })
     
     ipcMain.handle('cloudflareImg', async(_, res) => {

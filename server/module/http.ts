@@ -1,10 +1,9 @@
 import { BrowserWindow, ipcMain, shell } from 'electron'
 import { getAppInfo, useTelnetTest } from '~/tools/tools'
-import { updateGitlabFile, useFetch, useGetIp } from '~/tools/http'
+import { useFetch, useGetIp } from '~/tools/http'
 import crypto from 'crypto'
 import { useWebsocket, useWebsocketClose } from '~/tools/websocket'
 import { useHttpServe, useHttpServeClose } from '~/tools/http'
-import { useGitlabCicd } from '~/tools/git'
 import { systemCache } from './cache'
 
 export const useHttp = (win: BrowserWindow) => {
@@ -55,15 +54,6 @@ export const useHttp = (win: BrowserWindow) => {
 
     ipcMain.handle('closeHttpServe', async() => {
         return useHttpServeClose()
-    })
-
-    ipcMain.handle('updateGitlabFile', async(_, req) => {
-        const { rootPath, project, projectUrl, filePath, branch } = req
-        return updateGitlabFile(rootPath, project, projectUrl, filePath, branch)
-    })
-
-    ipcMain.handle('gitlabCicd', async(_, req) => {
-        return useGitlabCicd(req)
     })
 
     ipcMain.handle('getIp', async() => {
