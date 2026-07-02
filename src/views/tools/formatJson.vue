@@ -39,7 +39,6 @@ const checkJson = (value: any) => {
 const rules = reactive<FormRules<IForm>>({
     json: [{ required: true, validator: (_: any, value: any, callback: any) => callback(checkJson(value)), trigger: 'blur' }]
 })
-const codeRef = ref()
 const submitForm = async(formEl: FormInstance | undefined) => {
     if(!await epsFormSubmit(formEl)) return
     responseData.value = JSON.stringify(JSON.parse(ruleForm.json), null, ruleForm.space)

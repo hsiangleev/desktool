@@ -1,17 +1,13 @@
 import { BrowserWindow, ipcMain } from 'electron'
 import { selFileImg, openMdFile, saveMdFile, sellectDir, uploadCloudflareImg, copyFileImgTime, saveImgByClipboard, portAgentList, portAgentAdd, portAgentDel, getServerName, startServerName, stopServerName, startCommand, readDirTreeMind } from '~/tools/file'
 import { processStop } from '~/tools/command'
-import { loadConfigFile, useReaddir } from '~/tools/tools'
+import { useReaddir } from '~/tools/tools'
 import { pathToFileURL, fileURLToPath } from 'url'
 import path from 'path'
 
 export const useFile = (win: BrowserWindow) => {
     ipcMain.handle('readdir', async(_, dir) => {
         return useReaddir(dir)
-    })
-
-    ipcMain.handle('getConfig', async() => {
-        return loadConfigFile()
     })
 
     ipcMain.handle('sellectDir', async() => {
